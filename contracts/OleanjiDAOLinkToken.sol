@@ -19,18 +19,22 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
     uint256 public joinMembershipAward = 500 * 10 ** 18;
     struct Members {
        uint256 memberId;
+       string name;
        address memberAddress;
        uint256 balance;
       
     }
     uint256 numberOfMembers;
 
-    mapping (address => bool ) alreadyAMember;
+    mapping (address => bool ) public alreadyAMember;
     mapping (uint => Members ) memberCount;
 
     
-
-    function joinMembership() public {
+    function IsAMember() public view returns(bool){
+       bool isamember = alreadyAMember[msg.sender];
+       return isamember;
+    }
+    function joinMembership(string memory _name) public {
         require(alreadyAMember[msg.sender] == false , "You are already a member");
 
         require(balanceOf(msg.sender) == 0 , "Hmmm where did you get this token from?");
@@ -48,6 +52,7 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
 
         memberCount[numberOfMembers] = Members(
             numberOfMembers,
+            _name,
             msg.sender,
             balanceOf(msg.sender)
         );

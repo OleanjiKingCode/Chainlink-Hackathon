@@ -1,5 +1,5 @@
 
-  export const LinkTokenAddress ="0x24d6D640D36F45D65F289774B986a6c61C95E02F"
+  export const LinkTokenAddress ="0x84c7F819C14cEA9Bc8B3df00A63C16Be3Db15346"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
   export const abi = [
     {
@@ -83,6 +83,19 @@
       "type": "event"
     },
     {
+      "inputs": [],
+      "name": "IsAMember",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -101,6 +114,25 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "alreadyAMember",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
@@ -198,6 +230,11 @@
               "type": "uint256"
             },
             {
+              "internalType": "string",
+              "name": "name",
+              "type": "string"
+            },
+            {
               "internalType": "address",
               "name": "memberAddress",
               "type": "address"
@@ -241,7 +278,13 @@
       "type": "function"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        }
+      ],
       "name": "joinMembership",
       "outputs": [],
       "stateMutability": "nonpayable",

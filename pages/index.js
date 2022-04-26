@@ -72,11 +72,11 @@ export default function Home() {
   //     </footer>
   //   </div>
   // )
-  
+  const[alreadyAMember ,setAlredyAMember] = useState(false)
   const account = useContext(OwnersAccount)
   const [walletConnected, setWalletConnected] = useState(false);
   const web3ModalRef = useRef();
-
+  const[name,setName] =useState("")
 
   const getProviderOrSigner = async (needSigner = false) => {
    
@@ -106,7 +106,7 @@ export default function Home() {
     try {
      
       await getProviderOrSigner();
-     
+     checIfAlreadyAMember()
       setWalletConnected(true);
      
       console.log(walletConnected);
@@ -137,44 +137,79 @@ export default function Home() {
        
         const token= new Contract(LinkTokenAddress, abi,signer)
        
-        const tx = await token.joinMembership();
+        const tx = await token.joinMembership(name);
        
         await tx.wait();
+        setAlredyAMember(true);
     } catch (error) {
       console.log(error);
     }
   
   }
+  const checIfAlreadyAMember = async () => {
+    const signer = await getProviderOrSigner(true);
+   
+    const token= new Contract(LinkTokenAddress, abi,signer)
+   
+    const tx = await token.IsAMember();
+
+    if (tx) {
+      setAlredyAMember(true);
+    }
+    else {
+      setAlredyAMember(false);
+    }
 
 
-  return (
+  }
 
-    <div>
-      {
-        (account !== OwnersAddress) && (
+
+  const renderButton = () =>{
+    if(account !== OwnersAddress) {
+      if(!alreadyAMember) {
+        return (
           <div>
             <p>
               Welcome to OleanjiDAO ChainLink DAO
             </p>
+            <input
+              placeholder='Enter a nickname'
+              type="text"
+              onChange={e => setName(e)}
+              />
             <button onClick={joinmembership}>
               Join Membership
             </button>
           </div>
         )
-
+        
       }
-      {
-        (account === OwnersAddress) && (
-          <p>
-            Boss Welcome ser!!!
-          </p>
+      else if(alreadyAMember){
+        return (
+          <div>
+            <p>
+              Welcome Back to OleanjiDAO ChainLink DAO
+            </p>
+           
+          </div>
         )
       }
-      <div>
+    }
+    else if (account === OwnersAddress) {
+      return (
         <p>
-         
-        </p>
-      </div>
+        Boss Welcome ser!!!
+      </p>
+      )
+    }
+    
+    
+    
+  }
+  return (
+
+    <div>
+     {renderButton()}
     </div>
   )
 

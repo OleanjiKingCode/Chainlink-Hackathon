@@ -69,9 +69,11 @@ export default function AllMembers() {
       
                 let MemberList = {
                     Index: i.memberId.toNumber(),
+                    Name:i.name,
                     Address: i.memberAddress,
                     Balance: ethers.utils.formatEther(i.balance)
                 }
+                console.log(i.name)
                 return MemberList
             }))
             
@@ -97,6 +99,10 @@ export default function AllMembers() {
                         <p>
                            { lists.Index}
                         </p>
+                        <p>
+                            {lists.Name}
+                        </p>
+
                         <p>
                             {lists.Address}
                         </p>
