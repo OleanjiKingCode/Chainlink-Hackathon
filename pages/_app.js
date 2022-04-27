@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import Head from 'next/head'
 import styles from "../styles/Home.module.css";
 import Web3Modal from "web3modal";
 import { providers} from "ethers";
@@ -71,8 +72,15 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <div>
-      <nav>
-        <div>
+      <Head>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+      </link>
+      <title>Hackathon</title>
+        <meta name="description" content="Oleanji-Hackathon-Dapp" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <nav className='container-fluid'>
+        <div className='row'>
           <Link href="/">
             <a>
               <p>
