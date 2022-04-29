@@ -1,11 +1,12 @@
 const hre = require("hardhat");
 const filesys = require("fs");
 
+
 async function main() {
 
   const LinkToken = await hre.ethers.getContractFactory("OleanjiDAOLinkToken");
   const linktoken = await LinkToken.deploy("10000");
-
+  const abi = "";
   await linktoken.deployed();
 
   console.log("LinkToken deployed to:", linktoken.address);
@@ -13,6 +14,7 @@ async function main() {
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
+  export const abi = "${abi }"
   
   `)
 }

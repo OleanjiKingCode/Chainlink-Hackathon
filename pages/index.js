@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
-import { providers, Contract } from "ethers";
+import { providers, Contract,ethers } from "ethers";
 import Link from 'next/link';
 import { useEffect, useRef, useState, useContext } from "react";
 import { LinkTokenAddress, OwnersAddress ,  abi} from "../constant"
 import { OwnersAccount } from '../context';
+// import {Abi } from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json/abi'
 
 
 export default function Home() {
@@ -74,6 +75,7 @@ export default function Home() {
   // )
   const[alreadyAMember ,setAlredyAMember] = useState(false)
   const account = useContext(OwnersAccount)
+  const[price, setPrice] =useState(0)
   const [walletConnected, setWalletConnected] = useState(false);
   const web3ModalRef = useRef();
   const[name,setName] =useState("")
@@ -136,8 +138,17 @@ export default function Home() {
         const signer = await getProviderOrSigner(true);
        
         const token= new Contract(LinkTokenAddress, abi,signer)
-       
-        const tx = await token.joinMembership(name);
+
+       let amount = await token.getPrice();
+      
+        amount = amount.toString();
+      
+ 
+  
+     
+        let tx = await token.joinMembership(name,{
+          value : amount
+        });
        
         await tx.wait();
         setAlredyAMember(true);
@@ -175,7 +186,7 @@ export default function Home() {
             <input
               placeholder='Enter a nickname'
               type="text"
-              onChange={e => setName(e)}
+              onChange={e => setName(e.target.value)}
               />
             <button onClick={joinmembership}>
               Join Membership

@@ -2,21 +2,27 @@
 
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
 contract VotingDappByOleanji {
 
 
-    
+    address tokenAddress;
 
+    constructor(address _tokenAddress){
+        tokenAddress = _tokenAddress;
+    }
+    
+    uint votingPrice= 150 *10 ** 18;
     uint8 public numofappliedCandidates;
 
-    uint8 public maxnumofAppliableCandidates = 5;
+    // uint8 public maxnumofAppliableCandidates = 5;
     
     mapping(address => bool) public areYouACandidate;
 
     struct Voters{
         uint votersId;
         uint votecount;
-       
         string Slogan;
         
     }
@@ -26,17 +32,17 @@ contract VotingDappByOleanji {
     mapping(address => bool) public votedAlready;
 
 
-    function jointhecandidateList( string memory _slogan) public{
+    function jointhecandidateList( string memory _slogan) public payable{
         require(!areYouACandidate[msg.sender], "You are already a candidate to be voted for");
         require(!votedAlready[msg.sender], "You have already voted for someone so you cannot be a candidate");
-        require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
-        
+        // require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
+        require(msg.value >= votingPrice ,"Not Enough");
+       
         numofappliedCandidates +=1;
 
         Votersprofile[numofappliedCandidates] =Voters(
             numofappliedCandidates,
             0,
-            
             _slogan
         );
         areYouACandidate[msg.sender]=true;
@@ -52,9 +58,9 @@ contract VotingDappByOleanji {
     }
 
     function fetchVotersList () public view returns(Voters[] memory) {
-        Voters[] memory list = new Voters[] (maxnumofAppliableCandidates);
+        Voters[] memory list = new Voters[] (numofappliedCandidates);
         uint index = 0;
-        for (uint i = 0; i < maxnumofAppliableCandidates; i++){
+        for (uint i = 0; i < numofappliedCandidates; i++){
             uint currentnum = Votersprofile[i + 1].votersId;
             Voters storage currentItem = Votersprofile[currentnum];
             

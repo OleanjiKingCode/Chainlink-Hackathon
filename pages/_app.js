@@ -79,83 +79,93 @@ function MyApp({ Component, pageProps }) {
         <meta name="description" content="Oleanji-Hackathon-Dapp" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <nav className='container-fluid'>
+      <div className='container-fluid'>
         <div className='row'>
-          <Link href="/">
-            <a>
-              <p>
-                OLEANJI CHAINLINK HACKATHON
-              </p>
-            </a>
-          </Link>
-          {
-            !walletConnected && (
-              <div>
-                <button onClick={connectWallet}>
-                  <p> Connect Wallet </p>
-                </button>
-              </div>
-            )
-          }
-         
-          {
-            
-            walletConnected && (
-              <div>
-                <p>
-                <button>
-                  <p> {account}
-                   </p>
-                </button>
-                </p>
-              </div>
-            )
-          }
-        </div>
-        <div>
-          <Link href="/">
-            <p>
-              Home
-            </p>
-          </Link>
-          <Link href="/Voting-poll">
-            <p>
-              Voting
-            </p>
-          </Link>
-          <Link href="/lottery">
-            <p>
-              Lottery
-            </p>
-          </Link>
-          <Link href="/meet-up">
-            <p>
-              Meet Up
-            </p>
-          </Link>
-          <Link href="/news">
-            <p>
-              News
-            </p>
-          </Link>
-          {
-            account === OwnersAddress && (
+          
+          <div className='d-inline-flex p-3 m-10 bd-highlight justify-content-between align-items-center' style={{backgroundColor:"#ff9a8a"}} >
+            <Link href="/">
+              <a  className={styles.first} >
+                <div className=' d-flex align-items-center text-align-center text-grey font-weight-bold'>
+                  <h3>OLEANJI CHAINLINK HACKATHON</h3>
+                </div>
+              </a>
+            </Link>
+            {
+              !walletConnected && (
+                <div>
+                  <button className={styles.second} onClick={connectWallet}>
+                  
+                    <div className='d-inline-block text-truncate p-2'>
+                      Connect Wallet </div>
+                  </button>
+                </div>
+              )
+            }
+          
+            {
               
-              <Link href="/all-members">
-                <p>
-                  All Members
-                </p>
-              </Link>
-            
-            )
-          }
+              walletConnected && (
+                <div>
+                
+                  <button className={styles.second}>
+                    <div className='d-inline-block p-2 col-6 text-truncate'>
+                       {account}
+                    </div>
+                  </button>
+                 
+                </div>
+              )
+            }
+          </div>
+     
+          <div className='col-md-3 text-white' style={{backgroundColor:" #ff9a8a", height:"589px",position:"relative", overflow:"hidden"}}>
+            <Link href="/">
+              <div className=' d-flex justify-content-center p-4 mx-5 '>
+                Home
+              </div>
+            </Link>
+            <Link href="/Voting-poll">
+              <div className=' d-flex justify-content-center  p-4 mx-5'>
+                Voting
+              </div>
+            </Link>
+            <Link href="/lottery">
+              <div className='d-flex justify-content-center  p-4 mx-5'>
+                Lottery
+              </div>
+            </Link>
+            <Link href="/meet-up">
+              <div className=' d-flex justify-content-center p-4 mx-5'>
+                Meet Up
+              </div>
+            </Link>
+            <Link href="/news">
+              <div className='d-flex justify-content-center p-4 mx-5'>
+                News
+              </div>
+            </Link>
+            {
+              account === OwnersAddress && (
+                
+                <Link href="/all-members">
+                  <div className=' d-flex justify-content-center p-4 mx-5'>
+                    All Members
+                  </div>
+                </Link>
+              
+              )
+            }
+          </div>
+          <div className='col-md-9 d-inline-flex justify-content-center align-self-center'>
+            <OwnersAccount.Provider value={account}>
+            <Component {...pageProps}  />
+            </OwnersAccount.Provider>
+          </div>
+          
         </div>
-      </nav>
-      <div>
-        <OwnersAccount.Provider value={account}>
-        <Component {...pageProps}  />
-        </OwnersAccount.Provider>
+        
       </div>
+     
     </div>
     
   ) 
