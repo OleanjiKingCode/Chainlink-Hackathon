@@ -21,28 +21,14 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
       
     }
 
-    uint256 numberOfMembers;
+    uint256 public numberOfMembers;
 
     mapping (address => bool ) public alreadyAMember;
-    mapping (uint => Members ) memberCount;
+    mapping (uint => Members ) public memberCount;
 
-    uint votingPrice= 150 *10 ** 18;
-    uint8 public numofappliedCandidates;
+  
 
-    // uint8 public maxnumofAppliableCandidates = 5;
-    
-    mapping(address => bool) public areYouACandidate;
-
-    struct Voters{
-        uint votersId;
-        uint votecount;
-        string Slogan;
-        
-    }
-
-    mapping(uint256 => Voters) private Votersprofile;
-
-    mapping(address => bool) public votedAlready;
+   
 
    
     constructor(uint totalSupply)  {
@@ -59,10 +45,12 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
 
 
 
-    function IsAMember() public view returns(bool){
-       bool isamember = alreadyAMember[msg.sender];
+    function IsAMember(address sender) external view returns(bool){
+       bool isamember = alreadyAMember[sender];
        return isamember;
     }
+
+
 
     function getPrice() public view returns(uint){
         return priceforMembership;
@@ -96,7 +84,19 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
     }
 
 
-
+        function getInfo() external view returns (string memory, address) {
+            uint index = 0;
+            string memory _name;
+            for (index = 0; index < numberOfMembers; index++) {
+                address sender = msg.sender;
+                if(sender == memberCount[index + 1].memberAddress) {
+                    uint currentId = memberCount[index + 1].memberId;
+                    _name = memberCount[currentId].name;
+                }
+               
+            }
+            return (_name ,msg.sender);
+        }
 
       function fetchMembers() public view  onlyOwner returns(Members[] memory)  {
           Members[] memory members = new Members[] (numberOfMembers);
@@ -114,45 +114,9 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
     
 
 
-    function jointhecandidateList( string memory _slogan) public payable{
-        require(!areYouACandidate[msg.sender], "You are already a candidate to be voted for");
-        require(!votedAlready[msg.sender], "You have already voted for someone so you cannot be a candidate");
-        // require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
-        require(msg.value >= votingPrice ,"Not Enough");
-        transferFrom(msg.sender, address(this) , msg.value);
-        numofappliedCandidates +=1;
-
-        Votersprofile[numofappliedCandidates] =Voters(
-            numofappliedCandidates,
-            0,
-            _slogan
-        );
-        areYouACandidate[msg.sender]=true;
-        votedAlready[msg.sender]=false;
+    function getReserve() public view returns (uint) {
+        return balanceOf(address(this));
     }
-
-
-    function Voting (uint8 _votersId) public {
-        require(!areYouACandidate[msg.sender], "You are already a candidate to be voted for");
-        require(!votedAlready[msg.sender], "You have already voted for someone so you cannot be a candidate");
-        Votersprofile[_votersId].votecount += 1;
-        votedAlready[msg.sender]=true;
-    }
-
-    function fetchVotersList () public view returns(Voters[] memory) {
-        Voters[] memory list = new Voters[] (numofappliedCandidates);
-        uint index = 0;
-        for (uint i = 0; i < numofappliedCandidates; i++){
-            uint currentnum = Votersprofile[i + 1].votersId;
-            Voters storage currentItem = Votersprofile[currentnum];
-            
-            list[index] = currentItem;
-            index += 1;
-        }
-
-        return list;
-    }
-    
     function withdraw() external onlyOwner {
         payable(owner()).transfer(address(this).balance);
     }

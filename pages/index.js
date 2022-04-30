@@ -2,7 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
 import { providers, Contract,ethers } from "ethers";
-import Link from 'next/link';
+import { useRouter } from "next/router"
 import { useEffect, useRef, useState, useContext } from "react";
 import { LinkTokenAddress, OwnersAddress ,  abi} from "../constant"
 import { OwnersAccount } from '../context';
@@ -142,10 +142,7 @@ export default function Home() {
        let amount = await token.getPrice();
       
         amount = amount.toString();
-      
- 
-  
-     
+
         let tx = await token.joinMembership(name,{
           value : amount
         });

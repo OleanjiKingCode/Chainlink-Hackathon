@@ -124,7 +124,7 @@ function MyApp({ Component, pageProps }) {
                 Home
               </div>
             </Link>
-            <Link href="/Voting-poll">
+            <Link href="/voting-poll">
               <div className=' d-flex justify-content-center  p-4 mx-5'>
                 Voting
               </div>

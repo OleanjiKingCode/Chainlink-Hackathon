@@ -1,5 +1,5 @@
 
-  export const LinkTokenAddress ="0x4E1212Fb99721782DA0f93549e88C4c6fA330447"
+  export const LinkTokenAddress ="0x1E2e5D4580B318fE4F3B9204574bA69bd218F372"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
   export const abi = [
     {
@@ -97,19 +97,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint8",
-          "name": "_votersId",
-          "type": "uint8"
-        }
-      ],
-      "name": "Voting",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -301,11 +288,6 @@
               "type": "uint256"
             },
             {
-              "internalType": "uint256",
-              "name": "votecount",
-              "type": "uint256"
-            },
-            {
               "internalType": "string",
               "name": "Slogan",
               "type": "string"
@@ -322,6 +304,32 @@
     {
       "inputs": [],
       "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getReserve",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getVotingPrice",
       "outputs": [
         {
           "internalType": "uint256",
@@ -391,8 +399,27 @@
         }
       ],
       "name": "jointhecandidateList",
-      "outputs": [],
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
       "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxnumofAppliableCandidates",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -531,25 +558,6 @@
       "name": "transferOwnership",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "votedAlready",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
