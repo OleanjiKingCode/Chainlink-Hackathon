@@ -1,7 +1,7 @@
 
-  export const LinkTokenAddress ="0x1E2e5D4580B318fE4F3B9204574bA69bd218F372"
+  export const LinkTokenAddress ="0xeCb54640B3F9D899B4B1Ed9cA36421DdD44D2b03"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
-  export const abi = [
+  export const abiToken = [
     {
       "inputs": [
         {
@@ -87,7 +87,13 @@
       "type": "fallback"
     },
     {
-      "inputs": [],
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
       "name": "IsAMember",
       "outputs": [
         {
@@ -164,25 +170,6 @@
         }
       ],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "name": "areYouACandidate",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -278,24 +265,12 @@
     },
     {
       "inputs": [],
-      "name": "fetchVotersList",
+      "name": "getInfo",
       "outputs": [
         {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "votersId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "string",
-              "name": "Slogan",
-              "type": "string"
-            }
-          ],
-          "internalType": "struct OleanjiDAOLinkToken.Voters[]",
+          "internalType": "string",
           "name": "",
-          "type": "tuple[]"
+          "type": "string"
         }
       ],
       "stateMutability": "view",
@@ -317,19 +292,6 @@
     {
       "inputs": [],
       "name": "getReserve",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getVotingPrice",
       "outputs": [
         {
           "internalType": "uint256",
@@ -393,30 +355,32 @@
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "_slogan",
-          "type": "string"
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
-      "name": "jointhecandidateList",
+      "name": "memberCount",
       "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "memberId",
+          "type": "uint256"
+        },
         {
           "internalType": "string",
-          "name": "",
+          "name": "name",
           "type": "string"
-        }
-      ],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "maxnumofAppliableCandidates",
-      "outputs": [
+        },
         {
-          "internalType": "uint8",
-          "name": "",
-          "type": "uint8"
+          "internalType": "address",
+          "name": "memberAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -437,12 +401,12 @@
     },
     {
       "inputs": [],
-      "name": "numofappliedCandidates",
+      "name": "numberOfMembers",
       "outputs": [
         {
-          "internalType": "uint8",
+          "internalType": "uint256",
           "name": "",
-          "type": "uint8"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -572,5 +536,139 @@
       "type": "receive"
     }
   ];
-  
+
+  export const VotingAddress ="0x12Fe0078f4B5800e5f8CE524146a342197e89A6a"
+  export const abiVoting = [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_tokenAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "areYouACandidate",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "fetchVotersList",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "votersId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "Slogan",
+              "type": "string"
+            }
+          ],
+          "internalType": "struct VotingDappByOleanji.Voters[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getVotingPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_slogan",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "jointhecandidateList",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "maxnumofAppliableCandidates",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "numofappliedCandidates",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "votedAlready",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ];
   

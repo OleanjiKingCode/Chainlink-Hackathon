@@ -4,7 +4,7 @@ import Web3Modal from "web3modal";
 import { providers, Contract,ethers } from "ethers";
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress ,  abi} from "../constant"
+import { LinkTokenAddress, OwnersAddress ,  abiToken} from "../constant"
 import { OwnersAccount } from '../context';
 // import {Abi } from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json/abi'
 
@@ -137,7 +137,7 @@ export default function Home() {
      
         const signer = await getProviderOrSigner(true);
        
-        const token= new Contract(LinkTokenAddress, abi,signer)
+        const token= new Contract(LinkTokenAddress, abiToken,signer)
 
        let amount = await token.getPrice();
       
@@ -157,9 +157,9 @@ export default function Home() {
   const checIfAlreadyAMember = async () => {
     const signer = await getProviderOrSigner(true);
    
-    const token= new Contract(LinkTokenAddress, abi,signer)
+    const token= new Contract(LinkTokenAddress, abiToken,signer)
    
-    const tx = await token.IsAMember();
+    const tx = await token.IsAMember(signer.getAddress());
 
     if (tx) {
       setAlredyAMember(true);
