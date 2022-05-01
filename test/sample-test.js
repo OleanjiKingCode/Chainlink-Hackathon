@@ -12,7 +12,7 @@ describe("Joining", function () {
     const voting = await Voting.deploy(CA);
     await voting.deployed();
     const CA2= voting.address;
-
+    const owner =  await voting.signer.getAddress()
 
     const addr = await token.signer.getAddress()
     const values = await token.balanceOf(addr)
@@ -43,9 +43,13 @@ describe("Joining", function () {
     console.log(newones)
     const utils = ethers.utils.parseEther(newones);
     await token.connect(buyerAddress).approve(CA2, utils.toString())
-    console.log(utils)
+    console.log(utils);
+     
+    await voting.startApplication()
     const tx = await voting.connect(buyerAddress).jointhecandidateList("yippee" , utils);
     console.log(tx);
+    const list = await voting.connect(buyerAddress).fetchVotersList();
+    console.log(list)
     let balance = await token.balanceOf(addresssss);
     balance = (ethers.utils.formatEther(balance)).toString();
 

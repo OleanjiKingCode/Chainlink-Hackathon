@@ -21,7 +21,8 @@ export default function VotingPoll() {
     const web3ModalRef = useRef();
     const[members,setMembers] =useState([])
     const router = useRouter()
-    
+    const [started,setStarted] = useState(false)
+    const[ended,setEnded]=useState(false)
     
   
     const getProviderOrSigner = async (needSigner = false) => {
@@ -52,9 +53,8 @@ export default function VotingPoll() {
         try {
          
           await getProviderOrSigner();
-          await fetchVotersList()
-          await checIfAlreadyAMemberOfDAO()
-          console.log(walletConnected);
+          setWalletConnected(true);
+         await checIfAlreadyAMemberOfDAO()
         } catch (err) {
           console.error(err);
         }
@@ -71,6 +71,26 @@ export default function VotingPoll() {
         disableInjectedProvider: false,
         });
         connectWallet();
+
+       
+        const __started = checkifStarted();
+    
+        if(__started){
+           fetchVotersList()
+            checkifEnded();
+        }
+
+       
+        const EndedInterval = setInterval(async function () {
+            const _Started = await checkifStarted();
+            if (_Started) {
+              const _Ended = await checkifEnded();
+              if (_Ended) {
+                  await fetchVotersList()
+                clearInterval(EndedInterval);
+              }
+            }
+          }, 5 * 1000);
         }
     }, [walletConnected]);
 
@@ -107,8 +127,66 @@ export default function VotingPoll() {
     
     }
 
+    const startApplication = async () =>{
+        try {
+            const signer = await getProviderOrSigner(true);
+            const contract = new Contract(VotingAddress,abiVoting,signer);
+            const start = await contract.startApplication()
 
+            await start.wait()
 
+           await checkifStarted();
+        } catch (e) {
+            console.log(e)
+        }
+       
+    }
+
+    const checkifStarted = async ()=>{
+        try {
+         
+            const provider = await getProviderOrSigner();
+           
+            const votingContract = new Contract(VotingAddress,abiVoting,provider);
+           
+            const hasStarted = await votingContract.applicationStarted();
+        
+            // if(hasStarted){
+            //     console.log("im here")
+            //     setStarted(true)
+            // }else {
+            //     setStarted(false)
+            // }
+            setStarted(hasStarted)
+            console.log(hasStarted)
+            return hasStarted;
+           
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+    const checkifEnded = async ()=>{
+        try {
+            const provider = await getProviderOrSigner();
+            const contract = new Contract(VotingAddress,abiVoting,provider);
+            const ended = await contract.applicationEnded();
+
+            const hasended = ended.lt(Math.floor(Date.now() / 1000));
+
+            if(hasended){
+                setEnded(true)
+                console.log("has ended ooooooooooooooooooooooooo")
+            }else {
+                setEnded(false)
+            }
+            
+            return hasended;
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
     const fetchVotersList = async () =>{
         try {
             
@@ -116,11 +194,13 @@ export default function VotingPoll() {
 
         const contract = new Contract(VotingAddress,abiVoting,signer);
         const transact = await contract.fetchVotersList();
+        const Tokencontract = new Contract(LinkTokenAddress,abiToken,signer);
+        const _name = await Tokencontract.getInfo();
         const list = await Promise.all(transact.map(async i => {
 
             let List = {
                 Id : i.votersId.toNumber(),
-                Name:i.Name,
+                
                 Address:i.candidateAddress,
                 slogan :i.Slogan
 
@@ -128,6 +208,8 @@ export default function VotingPoll() {
             
             return List
         }))
+
+        setName(_name);
         setMembers(list);
         console.log(members)
         } catch (m) {
@@ -179,34 +261,75 @@ export default function VotingPoll() {
     }
     const renderButton = () =>
     {
-        if(alredyAMemberOfDAO){
-            if(alreadyACandidate) { 
-            
-                {
-                    
+       
+        if (!walletConnected) {
+            return (
+              <button onClick={connectWallet} className={styles.button}>
+                Connect your wallet
+              </button>
+            );
+          }
+
+        if(account == OwnersAddress && !started ) {
+                
+
+                return (
+                    <button onClick={startApplication}>
+                        START APPLICATION
+                    </button>
+                )
+        }
+        if(alredyAMemberOfDAO && !started){
+            return (
+                <h3>
+                    Application Process Has Not Started.
+                </h3>
+            )
+        }
+         if (!alredyAMemberOfDAO && !started) {
+            return(
+                <div>
+                <p>
+                    Go to home to join Membership to be able to view this section.
+                </p>
+                <button onClick={goback}
+                >
+                    HOME
+                </button>
+                </div>
+            )
+        }
+        
+        if(started && !ended && account == OwnersAddress) { 
+            {
+                            
                     members.map((lists,i) => {
             
                         return(
+                            <div>
+                                <h3>PEOPLE WHO HAVE JOINED</h3>
                             <div key={i}>
                                 <p>
-                                   {lists.Id}
+                                    {lists.Id}
                                 </p>
                                 <p>
                                     {lists.slogan}
                                 </p>
             
                                 <p>
-                                    {lists.Name}
+                                    {name}
                                 </p>
                                 <p>
                                     {lists.Address}
                                 </p>
                             </div>
+                            </div>
                         )
                     })
                 }
-            }else if (!alreadyACandidate)
-            {
+
+        }
+        if( started && !ended && alredyAMemberOfDAO && !alreadyACandidate ){
             return(
                 <div>
                     
@@ -230,12 +353,8 @@ export default function VotingPoll() {
         
                 </div>
             )
-            }
         }
-        else if (account == OwnersAddress) {
-            fetchVotersList
-        }
-        else if (!alredyAMemberOfDAO) {
+        if( started && !ended && !alredyAMemberOfDAO  ){
             return(
                 <div>
                 <p>
@@ -248,16 +367,109 @@ export default function VotingPoll() {
                 </div>
             )
         }
-      
-       
+        if( started && !ended && alredyAMemberOfDAO && alreadyACandidate ){
+                        
+            members.map((lists,i) => {
+    
+                return(
+                    <div>
+                        <h3>
+                            LIST OF CANDIDATES
+                        </h3>
+                    <div key={i}>
+                        <p>
+                            {lists.Id}
+                        </p>
+                        <p>
+                            {lists.slogan}
+                        </p>
+    
+                        <p>
+                            {name}
+                        </p>
+                        <p>
+                            {lists.Address}
+                        </p>
+                    </div>
+                    </div>
+                )
+            })
+        }
+        if((started && ended &&  account == OwnersAddress) || (started && ended && alredyAMemberOfDAO && !alreadyACandidate) ){
+            {
+                            
+                members.map((lists,i) => {
+        
+                    return(
+                        <div key={i}>
+                            <p>
+                                {lists.Id}
+                            </p>
+                            <p>
+                                {lists.slogan}
+                            </p>
+        
+                            <p>
+                                {name}
+                            </p>
+                            <p>
+                                {lists.Address}
+                            </p>
+                        </div>
+                    )
+                })
+            }
+        }
+        
+        if(started && ended && alredyAMemberOfDAO && alreadyACandidate)     
+        {
+            
+            members.map((lists,i) => {
+    
+                return(
+                    <div>
+                        <h3>PLS WAIT FOR RESULTS </h3>
+                    <div key={i}>
+                        <p>
+                            {lists.Id}
+                        </p>
+                        <p>
+                            {lists.slogan}
+                        </p>
+    
+                        <p>
+                            {name}
+                        </p>
+                        <p>
+                            {lists.Address}
+                        </p>
+                    </div>
+                    </div>
+                )
+            })
+        }
+        
+        if (started && ended && !alredyAMemberOfDAO) {
+            return(
+                <div>
+                <p>
+                    Go to home to join Membership to be able to view this section.
+                </p>
+                <button onClick={goback}
+                >
+                    HOME
+                </button>
+                </div>
+            )
+        
+        }
+
     }
 
     return (
 
         <div>
-            <Head>
-
-            </Head>
+           {/* {members} */}
             <div>
                 
             {renderButton()}

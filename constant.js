@@ -1,5 +1,5 @@
 
-  export const LinkTokenAddress ="0xeCb54640B3F9D899B4B1Ed9cA36421DdD44D2b03"
+  export const LinkTokenAddress ="0x7B66f0A70093591ADd0EcE7c497C586cd01C5d58"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
   export const abiToken = [
     {
@@ -537,7 +537,7 @@
     }
   ];
 
-  export const VotingAddress ="0x12Fe0078f4B5800e5f8CE524146a342197e89A6a"
+  export const VotingAddress ="0x7254E022932cD2623543CDcD1f73ff6cb30D2f4f"
   export const abiVoting = [
     {
       "inputs": [
@@ -549,6 +549,51 @@
       ],
       "stateMutability": "nonpayable",
       "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "applicationEnded",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "applicationStarted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -579,6 +624,11 @@
               "internalType": "uint256",
               "name": "votersId",
               "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "candidateAddress",
+              "type": "address"
             },
             {
               "internalType": "string",
@@ -649,6 +699,46 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "startApplication",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
