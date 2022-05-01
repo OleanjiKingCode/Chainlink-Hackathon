@@ -76,6 +76,7 @@ export default function Home() {
   //     </footer>
   //   </div>
   // )
+  const[loading,setLoading] = useState(false)
   const[alreadyAMember ,setAlredyAMember] = useState(false)
   const account = useContext(OwnersAccount)
   const[price, setPrice] =useState(0)
@@ -90,9 +91,9 @@ export default function Home() {
 
    
     const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 42) {
-      window.alert("Change the network to Kovan");
-      throw new Error("Change network to kovan");
+    if (chainId !== 3) {
+      window.alert("Change the network to Rinkeby");
+      throw new Error("Change network to Rinkeby");
     }
 
     if (needSigner) {
@@ -126,7 +127,7 @@ export default function Home() {
       // Assign the Web3Modal class to the reference object by setting it's `current` value
       // The `current` value is persisted throughout as long as this page is open
       web3ModalRef.current = new Web3Modal({
-        network: "kovan",
+        network: "rinkeby",
         providerOptions: {},
         disableInjectedProvider: false,
       });
@@ -149,8 +150,9 @@ export default function Home() {
         let tx = await token.joinMembership(name,{
           value : amount
         });
-       
+       setLoading(true)
         await tx.wait();
+        setLoading(false)
         setAlredyAMember(true);
     } catch (error) {
       console.log(error);
@@ -177,6 +179,15 @@ export default function Home() {
 
   const renderButton = () =>{
     if(account !== OwnersAddress) {
+      if(loading) {
+        return (
+          <div>
+            <button >
+             ...Loading...
+            </button>
+          </div>
+        )
+      }
       if(!alreadyAMember) {
         return (
           <div>

@@ -1,8 +1,8 @@
 
-  export const LinkTokenAddress ="0x9e65462A9e1215Fe0e45E15b4454a60C17908D9e"
+  export const LinkTokenAddress ="0x5c047072963E2c770D890f5e0ea10a1E3Ad6B9d9"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
   export const abiToken = ""
 
-  export const VotingAddress ="0x206e8b85026b90C0230a1397577d3247A0BfA48A"
+  export const VotingAddress ="0x52C5fa57512d651180E3E31d724A68Cd73142C66"
   export const abiVoting = ""
   

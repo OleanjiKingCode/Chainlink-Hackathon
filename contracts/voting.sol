@@ -49,10 +49,15 @@ contract VotingDappByOleanji is Ownable {
     function startApplication() public onlyOwner {
         
         applicationStarted = true;
-        applicationEnded = block.timestamp + 56 minutes;
+        applicationEnded = block.timestamp + 7 minutes;
         
     }
 
+   
+     function IsACandidate(address sender) external view returns(bool){
+       bool isACandidate = areYouACandidate[sender];
+       return isACandidate;
+    }
 
 // to join the people who would be randomly selected to get 500 OLT tokens
     function jointhecandidateList( string memory _slogan ,uint _amount) public payable  {
@@ -72,12 +77,9 @@ contract VotingDappByOleanji is Ownable {
         );
         areYouACandidate[msg.sender]=true;
         linktoken.transferFrom(msg.sender, address(this) ,_amount);
-        
-        
+
     }
 
-
-   
 
     function fetchVotersList () public view returns(Voters[] memory) {
         Voters[] memory list = new Voters[] (maxnumofAppliableCandidates);

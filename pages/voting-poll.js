@@ -2,7 +2,6 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
 import { ethers,providers, Contract } from "ethers";
-import Link from 'next/link';
 import { useEffect, useRef, useState, useContext } from "react";
 import { LinkTokenAddress, OwnersAddress,VotingAddress} from "../constant"
 import { OwnersAccount } from '../context';
@@ -12,6 +11,7 @@ import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkT
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
 
 export default function VotingPoll() {
+    const[loading,setLoading]= useState(false)
     const[alreadyACandidate ,setAlredyACandidate] = useState(false)
     const[alredyAMemberOfDAO , setAlredyAMemberOfDAO] = useState(false)
     const account = useContext(OwnersAccount)
@@ -30,18 +30,14 @@ export default function VotingPoll() {
    
         const provider = await web3ModalRef.current.connect();
         const web3Provider = new providers.Web3Provider(provider);
-    
-       
         const { chainId } = await web3Provider.getNetwork();
-        if (chainId !== 42) {
-          window.alert("Change the network to Kovan");
-          throw new Error("Change network to kovan");
+        if (chainId !== 3) {
+          window.alert("Change the network to Rinkeby");
+          throw new Error("Change network to Rinkeby");
         }
     
         if (needSigner) {
           const signer = web3Provider.getSigner();
-         
-         
           return signer;
         }
         return web3Provider;
@@ -55,7 +51,9 @@ export default function VotingPoll() {
          
           await getProviderOrSigner();
           setWalletConnected(true);
+
          await checIfAlreadyAMemberOfDAO()
+         await checIfAlreadyACandidate()
         } catch (err) {
           console.error(err);
         }
@@ -67,7 +65,7 @@ export default function VotingPoll() {
         // Assign the Web3Modal class to the reference object by setting it's `current` value
         // The `current` value is persisted throughout as long as this page is open
         web3ModalRef.current = new Web3Modal({
-        network: "kovan",
+        network: "rinkeby",
         providerOptions: {},
         disableInjectedProvider: false,
         });
@@ -105,25 +103,25 @@ export default function VotingPoll() {
         const signer = await getProviderOrSigner(true);
         let address = signer.getAddress();
         setAddress(address);
-
         const Tokencontract = new Contract(LinkTokenAddress,LINK.abi,signer);
         const votingcontract = new Contract(VotingAddress,VOTE.abi,signer);
         const transact = await votingcontract.getVotingPrice()
-        const utils = transact.toString()
+        const utils = transact.toString();
         const amount =  ethers.utils.parseEther(utils)
-        await Tokencontract.approve(VotingAddress, amount.toString());
+        const happy = await Tokencontract.approve(VotingAddress, amount.toString());
             console.log(slogan)
             console.log(amount)
+            setLoading(true)
+            await happy.wait()
         const join = await votingcontract.jointhecandidateList(slogan,amount);
             console.log(slogan)
-       
         await join.wait()
-
-        setAlredyACandidate(true);
+        setLoading(false)
         await fetchVotersList();
         console.log("slogan")
         let name = await Tokencontract.getInfo();
         console.log("slogan")
+        setAlredyACandidate(true);
         setName(name);
         
         
@@ -138,9 +136,9 @@ export default function VotingPoll() {
             const signer = await getProviderOrSigner(true);
             const contract = new Contract(VotingAddress,VOTE.abi,signer);
             const start = await contract.startApplication()
-
+            setLoading(true)
             await start.wait()
-
+            setLoading(false)
            await checkifStarted();
         } catch (e) {
             console.log(e)
@@ -182,7 +180,7 @@ export default function VotingPoll() {
 
             if(hasended){
                 setEnded(true)
-                console.log("has ended ooooooooooooooooooooooooo")
+                
             }else {
                 setEnded(false)
             }
@@ -224,21 +222,26 @@ export default function VotingPoll() {
         
 
     }
-    // const checIfAlreadyACandidate = async() =>{
-    //     const signer = await getProviderOrSigner(true);
-
-    //     const contract = new Contract(LinkTokenAddress,abi,signer);
-    //     const tx = await contract.fetchVotersList();
-
-
-    //     if (tx) {
-    //         setAlredyAMember(true);
-    //       }
-    //       else {
-    //         setAlredyAMember(false);
-    //       }
-      
-    // }
+    
+    const checIfAlreadyACandidate = async() =>{
+        try {
+            const signer = await getProviderOrSigner(true);
+           
+            const contract = new Contract(VotingAddress,VOTE.abi,signer);
+        
+        const tx = await contract.IsACandidate(signer.getAddress());
+        if (tx) {
+        setAlredyACandidate(true);
+        }
+        else {
+        setAlredyACandidate(false);
+        }
+        } catch (error) {
+            console.log(error)
+        }
+        
+       
+    }
 
     const checIfAlreadyAMemberOfDAO = async() =>{
         try {
@@ -247,7 +250,6 @@ export default function VotingPoll() {
         const contract = new Contract(LinkTokenAddress,LINK.abi,signer);
         
         const tx = await contract.IsAMember(signer.getAddress());
-        // console.log("tx")
         if (tx) {
         setAlredyAMemberOfDAO(true);
         }
@@ -275,7 +277,15 @@ export default function VotingPoll() {
               </button>
             );
           }
-
+          if(loading){
+              return (
+                  <div>
+                      <button>
+                            ...Loading...
+                        </button>
+                  </div>
+              )
+          }
         if(account == OwnersAddress && !started ) {
                 
 
@@ -311,14 +321,17 @@ export default function VotingPoll() {
             if (account == OwnersAddress) {
                 return (
                     <div>
+                        <h3>
+                            LIST OF CANDIDATES
+                        </h3>
                         {
                             members.map((lists,i) => {
+                               
     
                                 return(
+                                    !lists.Id == 0 && 
                                     <div>
-                                        <h3>
-                                            LIST OF CANDIDATES
-                                        </h3>
+                                        
                                     <div key={i}>
                                         <p>
                                             {lists.Id}
@@ -356,11 +369,9 @@ export default function VotingPoll() {
                     </div>
                 )
             }
-            else if(alredyAMemberOfDAO && !alreadyACandidate ){
+            else if(alredyAMemberOfDAO && !alreadyACandidate){
                 return(
                     <div>
-                        
-
                         <div>
                             <p> 
                                 NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
@@ -372,27 +383,27 @@ export default function VotingPoll() {
                             type="text"
                             onChange={e => setSlogan(e.target.value)} />
                             <button
-                        onClick={jointhecandidateList}
+                            onClick={jointhecandidateList}
                             >
                             <p>Apply</p> 
                             </button>
                         </div>
-            
-            
                     </div>
                 )
             }
             else  {
                 return (
                     <div>
+                         <h3>
+                            LIST OF CANDIDATES
+                        </h3>
                         {
                             members.map((lists,i) => {
     
                                 return(
+                                    !lists.Id == 0 && 
                                     <div>
-                                        <h3>
-                                            LIST OF CANDIDATES
-                                        </h3>
+                                       
                                     <div key={i}>
                                         <p>
                                             {lists.Id}
@@ -414,11 +425,9 @@ export default function VotingPoll() {
                         }
                     </div>
                 )
-                
             }
         }
         if(started && ended) { 
-           
             if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
                 return(
                     <div>
@@ -432,16 +441,20 @@ export default function VotingPoll() {
                     </div>
                 )
             }
+          
            else if(alredyAMemberOfDAO && alreadyACandidate)     
             {
             return (
                 <div>
+                     <h3>PLS WAIT FOR RESULTS </h3>
                     {
+                        
                         members.map((lists,i) => {
     
                             return(
+                                !lists.Id == 0 && 
                                 <div>
-                                    <h3>PLS WAIT FOR RESULTS </h3>
+                                   
                                 <div key={i}>
                                     <p>
                                         {lists.Id}
@@ -473,6 +486,7 @@ export default function VotingPoll() {
                             members.map((lists,i) => {
                     
                                 return(
+                                    !lists.Id == 0 && 
                                     <div key={i}>
                                         <p>
                                             {lists.Id}
@@ -503,9 +517,7 @@ export default function VotingPoll() {
     return (
 
         <div>
-           {/* {members} */}
-            <div>
-                
+            <div>  
             {renderButton()}
             </div>
         </div>

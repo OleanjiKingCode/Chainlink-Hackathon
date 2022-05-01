@@ -22,9 +22,9 @@ function MyApp({ Component, pageProps }) {
 
    
     const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 42) {
-      window.alert("Change the network to Kovan");
-      throw new Error("Change network to kovan");
+    if (chainId !== 3) {
+      window.alert("Change the network to Rinkeby");
+      throw new Error("Change network to Rinkeby");
     }
 
     if (needSigner) {
@@ -59,7 +59,7 @@ function MyApp({ Component, pageProps }) {
       // Assign the Web3Modal class to the reference object by setting it's `current` value
       // The `current` value is persisted throughout as long as this page is open
       web3ModalRef.current = new Web3Modal({
-        network: "kovan",
+        network: "rinkeby",
         providerOptions: {},
         disableInjectedProvider: false,
       });
@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }) {
       <div className='container-fluid'>
         <div className='row'>
           
-          <div className='d-inline-flex p-3 m-10 bd-highlight justify-content-between align-items-center' style={{backgroundColor:"#ff9a8a"}} >
+          <div className='d-inline-flex p-4 m-10 bd-highlight justify-content-between align-items-center' style={{backgroundColor:"#57b3f0"}} >
             <Link href="/">
               <a  className={styles.first} >
                 <div className=' d-flex align-items-center text-align-center text-grey font-weight-bold'>
@@ -118,29 +118,29 @@ function MyApp({ Component, pageProps }) {
             }
           </div>
      
-          <div className='col-md-3 text-white' style={{backgroundColor:" #ff9a8a", height:"589px",position:"relative", overflow:"hidden"}}>
+          <div className='col-md-2 text-white' style={{backgroundColor:" #1172b3", height:"589px",position:"relative", overflow:"hidden"}}>
             <Link href="/">
-              <div className=' d-flex justify-content-center p-4 mx-5 '>
+              <div className=' d-flex justify-content-center p-4 mx-10 '>
                 Home
               </div>
             </Link>
             <Link href="/voting-poll">
-              <div className=' d-flex justify-content-center  p-4 mx-5'>
+              <div className=' d-flex justify-content-center  p-4 mx-10'>
                 Voting
               </div>
             </Link>
             <Link href="/lottery">
-              <div className='d-flex justify-content-center  p-4 mx-5'>
+              <div className='d-flex justify-content-center  p-4 mx-10'>
                 Lottery
               </div>
             </Link>
             <Link href="/meet-up">
-              <div className=' d-flex justify-content-center p-4 mx-5'>
+              <div className=' d-flex justify-content-center p-4 mx-10'>
                 Meet Up
               </div>
             </Link>
             <Link href="/news">
-              <div className='d-flex justify-content-center p-4 mx-5'>
+              <div className='d-flex justify-content-center p-4 mx-10'>
                 News
               </div>
             </Link>
@@ -148,7 +148,7 @@ function MyApp({ Component, pageProps }) {
               account === OwnersAddress && (
                 
                 <Link href="/all-members">
-                  <div className=' d-flex justify-content-center p-4 mx-5'>
+                  <div className=' d-flex justify-content-center p-4 mx-10'>
                     All Members
                   </div>
                 </Link>
