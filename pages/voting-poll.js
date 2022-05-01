@@ -4,11 +4,12 @@ import Web3Modal from "web3modal";
 import { ethers,providers, Contract } from "ethers";
 import Link from 'next/link';
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress , abiToken , abiVoting,VotingAddress} from "../constant"
+import { LinkTokenAddress, OwnersAddress,VotingAddress} from "../constant"
 import { OwnersAccount } from '../context';
 import { useRouter } from "next/router"
 
-
+import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
+import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
 
 export default function VotingPoll() {
     const[alreadyACandidate ,setAlredyACandidate] = useState(false)
@@ -86,6 +87,7 @@ export default function VotingPoll() {
             if (_Started) {
               const _Ended = await checkifEnded();
               if (_Ended) {
+                  console.log(_Ended + "dwef    wefwefwef")
                   await fetchVotersList()
                 clearInterval(EndedInterval);
               }
@@ -104,23 +106,27 @@ export default function VotingPoll() {
         let address = signer.getAddress();
         setAddress(address);
 
-        const Tokencontract = new Contract(LinkTokenAddress,abiToken,signer);
-        const votingcontract = new Contract(VotingAddress,abiVoting,signer);
+        const Tokencontract = new Contract(LinkTokenAddress,LINK.abi,signer);
+        const votingcontract = new Contract(VotingAddress,VOTE.abi,signer);
         const transact = await votingcontract.getVotingPrice()
-        const   amount =  ethers.utils.parseEther(transact.toString())
-        const approval = await Tokencontract.approve(VotingAddress, amount.toString());
+        const utils = transact.toString()
+        const amount =  ethers.utils.parseEther(utils)
+        await Tokencontract.approve(VotingAddress, amount.toString());
             console.log(slogan)
+            console.log(amount)
         const join = await votingcontract.jointhecandidateList(slogan,amount);
             console.log(slogan)
+       
         await join.wait()
 
         setAlredyACandidate(true);
+        await fetchVotersList();
         console.log("slogan")
         let name = await Tokencontract.getInfo();
         console.log("slogan")
         setName(name);
-        setAlredyACandidate(true);
-        fetchVotersList()
+        
+        
     } catch (error) {
         console.log(error)
     }
@@ -130,7 +136,7 @@ export default function VotingPoll() {
     const startApplication = async () =>{
         try {
             const signer = await getProviderOrSigner(true);
-            const contract = new Contract(VotingAddress,abiVoting,signer);
+            const contract = new Contract(VotingAddress,VOTE.abi,signer);
             const start = await contract.startApplication()
 
             await start.wait()
@@ -147,7 +153,7 @@ export default function VotingPoll() {
          
             const provider = await getProviderOrSigner();
            
-            const votingContract = new Contract(VotingAddress,abiVoting,provider);
+            const votingContract = new Contract(VotingAddress,VOTE.abi,provider);
            
             const hasStarted = await votingContract.applicationStarted();
         
@@ -169,7 +175,7 @@ export default function VotingPoll() {
     const checkifEnded = async ()=>{
         try {
             const provider = await getProviderOrSigner();
-            const contract = new Contract(VotingAddress,abiVoting,provider);
+            const contract = new Contract(VotingAddress,VOTE.abi,provider);
             const ended = await contract.applicationEnded();
 
             const hasended = ended.lt(Math.floor(Date.now() / 1000));
@@ -191,11 +197,9 @@ export default function VotingPoll() {
         try {
             
         const signer = await getProviderOrSigner(true);
-
-        const contract = new Contract(VotingAddress,abiVoting,signer);
+        const contract = new Contract(VotingAddress,VOTE.abi,signer);
         const transact = await contract.fetchVotersList();
-        const Tokencontract = new Contract(LinkTokenAddress,abiToken,signer);
-        const _name = await Tokencontract.getInfo();
+        
         const list = await Promise.all(transact.map(async i => {
 
             let List = {
@@ -208,8 +212,10 @@ export default function VotingPoll() {
             
             return List
         }))
-
+        const Tokencontract = new Contract(LinkTokenAddress,LINK.abi,signer);
+        const _name = await Tokencontract.getInfo();
         setName(_name);
+      
         setMembers(list);
         console.log(members)
         } catch (m) {
@@ -238,7 +244,7 @@ export default function VotingPoll() {
         try {
             const signer = await getProviderOrSigner(true);
            
-        const contract = new Contract(LinkTokenAddress,abiToken,signer);
+        const contract = new Contract(LinkTokenAddress,LINK.abi,signer);
         
         const tx = await contract.IsAMember(signer.getAddress());
         // console.log("tx")
@@ -300,170 +306,198 @@ export default function VotingPoll() {
             )
         }
         
-        if(started && !ended && account == OwnersAddress) { 
-            {
-                            
-                    members.map((lists,i) => {
-            
-                        return(
-                            <div>
-                                <h3>PEOPLE WHO HAVE JOINED</h3>
-                            <div key={i}>
-                                <p>
-                                    {lists.Id}
-                                </p>
-                                <p>
-                                    {lists.slogan}
-                                </p>
-            
-                                <p>
-                                    {name}
-                                </p>
-                                <p>
-                                    {lists.Address}
-                                </p>
-                            </div>
-                            </div>
-                        )
-                    })
-                }
+        if( started && !ended ) {
 
-        }
-        if( started && !ended && alredyAMemberOfDAO && !alreadyACandidate ){
-            return(
-                <div>
+            if (account == OwnersAddress) {
+                return (
+                    <div>
+                        {
+                            members.map((lists,i) => {
+    
+                                return(
+                                    <div>
+                                        <h3>
+                                            LIST OF CANDIDATES
+                                        </h3>
+                                    <div key={i}>
+                                        <p>
+                                            {lists.Id}
+                                        </p>
+                                        <p>
+                                            {lists.slogan}
+                                        </p>
                     
-                    <div>
-                        <p> 
-                            NOTE: YOU ARE SIGNING UP FOR THIS FOR 150OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
-                        </p>
-                    </div>
-                    <div>
-                        <input
-                        placeholder='slogan'
-                        type="text"
-                        onChange={e => setSlogan(e.target.value)} />
-                        <button
-                    onClick={jointhecandidateList}
-                        >
-                        <p>Apply</p> 
-                        </button>
-                    </div>
-        
-        
-                </div>
-            )
-        }
-        if( started && !ended && !alredyAMemberOfDAO  ){
-            return(
-                <div>
-                <p>
-                    Go to home to join Membership to be able to view this section.
-                </p>
-                <button onClick={goback}
-                >
-                    HOME
-                </button>
-                </div>
-            )
-        }
-        if( started && !ended && alredyAMemberOfDAO && alreadyACandidate ){
-                        
-            members.map((lists,i) => {
-    
-                return(
-                    <div>
-                        <h3>
-                            LIST OF CANDIDATES
-                        </h3>
-                    <div key={i}>
-                        <p>
-                            {lists.Id}
-                        </p>
-                        <p>
-                            {lists.slogan}
-                        </p>
-    
-                        <p>
-                            {name}
-                        </p>
-                        <p>
-                            {lists.Address}
-                        </p>
-                    </div>
+                                        <p>
+                                            {name}
+                                        </p>
+                                        <p>
+                                            {lists.Address}
+                                        </p>
+                                    </div>
+                                    </div>
+                                )
+                                })
+                        }
                     </div>
                 )
-            })
-        }
-        if((started && ended &&  account == OwnersAddress) || (started && ended && alredyAMemberOfDAO && !alreadyACandidate) ){
-            {
-                            
-                members.map((lists,i) => {
-        
-                    return(
-                        <div key={i}>
-                            <p>
-                                {lists.Id}
-                            </p>
-                            <p>
-                                {lists.slogan}
-                            </p>
-        
-                            <p>
-                                {name}
-                            </p>
-                            <p>
-                                {lists.Address}
+                
+
+            }
+            else if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+                return(
+                    <div>
+                    <p>
+                        Go to home to join Membership to be able to view this section.
+                    </p>
+                    <button onClick={goback}
+                    >
+                        HOME
+                    </button>
+                    </div>
+                )
+            }
+            else if(alredyAMemberOfDAO && !alreadyACandidate ){
+                return(
+                    <div>
+                        
+
+                        <div>
+                            <p> 
+                                NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
                             </p>
                         </div>
-                    )
-                })
+                        <div>
+                            <input
+                            placeholder='slogan'
+                            type="text"
+                            onChange={e => setSlogan(e.target.value)} />
+                            <button
+                        onClick={jointhecandidateList}
+                            >
+                            <p>Apply</p> 
+                            </button>
+                        </div>
+            
+            
+                    </div>
+                )
+            }
+            else  {
+                return (
+                    <div>
+                        {
+                            members.map((lists,i) => {
+    
+                                return(
+                                    <div>
+                                        <h3>
+                                            LIST OF CANDIDATES
+                                        </h3>
+                                    <div key={i}>
+                                        <p>
+                                            {lists.Id}
+                                        </p>
+                                        <p>
+                                            {lists.slogan}
+                                        </p>
+                    
+                                        <p>
+                                            {name}
+                                        </p>
+                                        <p>
+                                            {lists.Address}
+                                        </p>
+                                    </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                )
+                
+            }
+        }
+        if(started && ended) { 
+           
+            if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+                return(
+                    <div>
+                    <p>
+                        Go to home to join Membership to be able to view this section.
+                    </p>
+                    <button onClick={goback}
+                    >
+                        HOME
+                    </button>
+                    </div>
+                )
+            }
+           else if(alredyAMemberOfDAO && alreadyACandidate)     
+            {
+            return (
+                <div>
+                    {
+                        members.map((lists,i) => {
+    
+                            return(
+                                <div>
+                                    <h3>PLS WAIT FOR RESULTS </h3>
+                                <div key={i}>
+                                    <p>
+                                        {lists.Id}
+                                    </p>
+                                    <p>
+                                        {lists.slogan}
+                                    </p>
+                
+                                    <p>
+                                        {name}
+                                    </p>
+                                    <p>
+                                        {lists.Address}
+                                    </p>
+                                </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            )
+            
+            }
+            else {
+                return (
+                    <div>
+                        {
+                                    
+                            members.map((lists,i) => {
+                    
+                                return(
+                                    <div key={i}>
+                                        <p>
+                                            {lists.Id}
+                                        </p>
+                                        <p>
+                                            {lists.slogan}
+                                        </p>
+                    
+                                        <p>
+                                            {name}
+                                        </p>
+                                        <p>
+                                            {lists.Address}
+                                        </p>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                )
             }
         }
         
-        if(started && ended && alredyAMemberOfDAO && alreadyACandidate)     
-        {
-            
-            members.map((lists,i) => {
-    
-                return(
-                    <div>
-                        <h3>PLS WAIT FOR RESULTS </h3>
-                    <div key={i}>
-                        <p>
-                            {lists.Id}
-                        </p>
-                        <p>
-                            {lists.slogan}
-                        </p>
-    
-                        <p>
-                            {name}
-                        </p>
-                        <p>
-                            {lists.Address}
-                        </p>
-                    </div>
-                    </div>
-                )
-            })
-        }
         
-        if (started && ended && !alredyAMemberOfDAO) {
-            return(
-                <div>
-                <p>
-                    Go to home to join Membership to be able to view this section.
-                </p>
-                <button onClick={goback}
-                >
-                    HOME
-                </button>
-                </div>
-            )
         
-        }
-
     }
 
     return (

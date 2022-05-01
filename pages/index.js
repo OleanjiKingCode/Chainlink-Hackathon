@@ -4,9 +4,12 @@ import Web3Modal from "web3modal";
 import { providers, Contract,ethers } from "ethers";
 import { useRouter } from "next/router"
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress ,  abiToken} from "../constant"
+import { LinkTokenAddress, OwnersAddress } from "../constant"
 import { OwnersAccount } from '../context';
 // import {Abi } from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json/abi'
+import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
+
+
 
 
 export default function Home() {
@@ -137,7 +140,7 @@ export default function Home() {
      
         const signer = await getProviderOrSigner(true);
        
-        const token= new Contract(LinkTokenAddress, abiToken,signer)
+        const token= new Contract(LinkTokenAddress, LINK.abi,signer)
 
        let amount = await token.getPrice();
       
@@ -157,7 +160,7 @@ export default function Home() {
   const checIfAlreadyAMember = async () => {
     const signer = await getProviderOrSigner(true);
    
-    const token= new Contract(LinkTokenAddress, abiToken,signer)
+    const token= new Contract(LinkTokenAddress, LINK.abi,signer)
    
     const tx = await token.IsAMember(signer.getAddress());
 
@@ -195,9 +198,15 @@ export default function Home() {
       else if(alreadyAMember){
         return (
           <div>
-            <p>
+            <h3>
               Welcome Back to OleanjiDAO ChainLink DAO
-            </p>
+              <p>
+                {
+                  LinkTokenAddress
+                } <br/>
+                  This is the Contract Address of OLeanji Link Token
+              </p>
+            </h3>
            
           </div>
         )
@@ -205,9 +214,16 @@ export default function Home() {
     }
     else if (account === OwnersAddress) {
       return (
-        <p>
+        <h3>
         Boss Welcome ser!!!
-      </p>
+        <p>
+                {
+                  LinkTokenAddress
+                }
+                <br/>
+                  This is the Contract Address of OLeanji Link Token
+              </p>
+      </h3>
       )
     }
     

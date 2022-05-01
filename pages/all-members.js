@@ -3,9 +3,13 @@ import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
 import { ethers,providers, Contract } from "ethers";
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress ,  abiToken} from "../constant"
+import { LinkTokenAddress, OwnersAddress } from "../constant"
 import { OwnersAccount } from '../context';
 import { useRouter } from "next/router"
+import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
+
+
+
 
 export default function AllMembers() {
     const [list, setList] =useState([])
@@ -59,7 +63,7 @@ export default function AllMembers() {
             // const signer = await getProviderOrSigner(true);
             // const provider = new ethers.providers.Web3Provider(window.ethereum);
             //  const signer = provider.getSigner();
-            const token = new Contract(LinkTokenAddress,abiToken,signer)
+            const token = new Contract(LinkTokenAddress,LINK.abi,signer)
          
             const data = await token.fetchMembers();
             // console.log("AScc")
