@@ -17,13 +17,19 @@ async function main() {
 
   await voting.deployed();
 
+  const VRF = await hre.ethers.getContractFactory("VRFv2Consumer");
+  const vrf = await VRF.deploy("3680");
+
+  await vrf.deployed();
+
+
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
 
 
   export const VotingAddress ="${voting.address}"
-
+  export const VRFAddress ="${vrf.address}"
   `)
 }
 

@@ -3,12 +3,13 @@ import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
 import { ethers,providers, Contract } from "ethers";
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress,VotingAddress} from "../constant"
+import { LinkTokenAddress, OwnersAddress,VotingAddress ,VRFAddress} from "../constant"
 import { OwnersAccount } from '../context';
 import { useRouter } from "next/router"
 
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
+import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
 
 export default function VotingPoll() {
     const[loading,setLoading]= useState(false)
@@ -24,14 +25,17 @@ export default function VotingPoll() {
     const router = useRouter()
     const [started,setStarted] = useState(false)
     const[ended,setEnded]=useState(false)
-    
-  
+    const[rand,setRand]= useState(0)
+    const[finished, setFinished] = useState(false)
+
+
+
     const getProviderOrSigner = async (needSigner = false) => {
    
         const provider = await web3ModalRef.current.connect();
         const web3Provider = new providers.Web3Provider(provider);
         const { chainId } = await web3Provider.getNetwork();
-        if (chainId !== 3) {
+        if (chainId !== 4) {
           window.alert("Change the network to Rinkeby");
           throw new Error("Change network to Rinkeby");
         }
@@ -86,6 +90,7 @@ export default function VotingPoll() {
               const _Ended = await checkifEnded();
               if (_Ended) {
                   console.log(_Ended + "dwef    wefwefwef")
+                  
                   await fetchVotersList()
                 clearInterval(EndedInterval);
               }
@@ -154,13 +159,6 @@ export default function VotingPoll() {
             const votingContract = new Contract(VotingAddress,VOTE.abi,provider);
            
             const hasStarted = await votingContract.applicationStarted();
-        
-            // if(hasStarted){
-            //     console.log("im here")
-            //     setStarted(true)
-            // }else {
-            //     setStarted(false)
-            // }
             setStarted(hasStarted)
             console.log(hasStarted)
             return hasStarted;
@@ -222,7 +220,27 @@ export default function VotingPoll() {
         
 
     }
-    
+    const GetRandomNumber = async () =>{
+        try {
+            const signer = await getProviderOrSigner(true);
+            const vrfContract = new Contract(VRFAddress,VRF.abi,signer);
+            const request =  await vrfContract.requestRandomWords();
+           
+            await request.wait()
+            const delay = ms => new Promise(res => setTimeout(res, ms));
+            await delay(10000);
+            const id = await vrfContract.s_requestId();
+           console.log(id)
+            await delay(60000);
+            console.log("jnn")
+            const RandomNum = await vrfContract.s_randomWords()
+            setRand(RandomNum);
+            console.log(rand)
+            setFinished(true)
+        } catch (m) {
+            console.log(m)
+        }
+    }
     const checIfAlreadyACandidate = async() =>{
         try {
             const signer = await getProviderOrSigner(true);
@@ -481,11 +499,15 @@ export default function VotingPoll() {
             else {
                 return (
                     <div>
+                        <button onClick={GetRandomNumber}>
+                            Get random person
+                        </button>
                         {
                                     
                             members.map((lists,i) => {
                     
                                 return(
+                                    
                                     !lists.Id == 0 && 
                                     <div key={i}>
                                         <p>
@@ -509,9 +531,90 @@ export default function VotingPoll() {
                 )
             }
         }
-        
-        
-        
+        if(finished) { 
+            if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+                return(
+                    <div>
+                    <p>
+                        Go to home to join Membership to be able to view this section.
+                    </p>
+                    <button onClick={goback}
+                    >
+                        HOME
+                    </button>
+                    </div>
+                )
+            }
+          
+           else if(alredyAMemberOfDAO && alreadyACandidate)     
+            {
+            return (
+                <div>
+                     <h3> The winner is {rand} </h3>
+                    {
+                        
+                        members.map((lists,i) => {
+    
+                            return(
+                                !lists.Id == 0 && 
+                                <div>
+                                   
+                                <div key={i}>
+                                    <p>
+                                        {lists.Id}
+                                    </p>
+                                    <p>
+                                        {lists.slogan}
+                                    </p>
+                
+                                    <p>
+                                        {name}
+                                    </p>
+                                    <p>
+                                        {lists.Address}
+                                    </p>
+                                </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            )
+            
+            }
+            else {
+                return (
+                    <div>
+                          <h3> The winner is {rand} </h3>
+                        {
+                                    
+                            members.map((lists,i) => {
+                    
+                                return(
+                                    
+                                    !lists.Id == 0 && 
+                                    <div key={i}>
+                                        <p>
+                                            {lists.Id}
+                                        </p>
+                                        <p>
+                                            {lists.slogan}
+                                        </p>
+                    
+                                        <p>
+                                            {name}
+                                        </p>
+                                        <p>
+                                            {lists.Address}
+                                        </p>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                )
+            }
+        }
     }
 
     return (

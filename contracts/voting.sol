@@ -20,7 +20,7 @@ contract VotingDappByOleanji is Ownable {
     uint votingPrice= 150;
     uint8 public numofappliedCandidates;
 
-    uint8 public maxnumofAppliableCandidates = 5;
+    uint8 public maxnumofAppliableCandidates = 20;
     // to check if a candidate or not
     mapping(address => bool) public areYouACandidate;
 // a struct to kepp track of the id and other information about the candidate
