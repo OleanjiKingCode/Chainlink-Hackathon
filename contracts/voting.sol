@@ -20,7 +20,7 @@ contract VotingDappByOleanji is Ownable {
     uint votingPrice= 150;
     uint8 public numofappliedCandidates;
 
-    uint8 public maxnumofAppliableCandidates = 20;
+    // uint8 public maxnumofAppliableCandidates = 20;
     // to check if a candidate or not
     mapping(address => bool) public areYouACandidate;
 // a struct to kepp track of the id and other information about the candidate
@@ -37,7 +37,9 @@ contract VotingDappByOleanji is Ownable {
     bool public applicationStarted=false;
     uint public applicationEnded;
 
-
+    function getNumberOfCandidates () external view returns(uint) {
+       return numofappliedCandidates;
+    }
     //to get the voting price
     function getVotingPrice() public view returns(uint){
         return votingPrice;
@@ -64,7 +66,7 @@ contract VotingDappByOleanji is Ownable {
         require(applicationStarted && block.timestamp < applicationEnded, "Application has not started");
         require(!areYouACandidate[msg.sender], "You are already a candidate to be voted for");
         require(oleanjidaotoken.IsAMember(msg.sender) == true , "You are  a false member" );
-        require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
+        // require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
        
   
 
@@ -82,9 +84,9 @@ contract VotingDappByOleanji is Ownable {
 
 
     function fetchVotersList () public view returns(Voters[] memory) {
-        Voters[] memory list = new Voters[] (maxnumofAppliableCandidates);
+        Voters[] memory list = new Voters[] (numofappliedCandidates);
         uint index = 0;
-        for (uint i = 0; i < maxnumofAppliableCandidates; i++){
+        for (uint i = 0; i < numofappliedCandidates; i++){
             uint currentnum = Votersprofile[i + 1].votersId;
             Voters storage currentItem = Votersprofile[currentnum];
             

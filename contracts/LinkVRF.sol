@@ -3,7 +3,7 @@
 pragma solidity ^0.8.7;
 
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-
+import "./IVoting.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";   
 
 contract VRFv2Consumer is VRFConsumerBaseV2 {
@@ -40,10 +40,17 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
   uint256 public s_requestId;
   address s_owner;
 
-  constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
+  uint256 public getrandTime = 0;
+  uint public mod;
+
+  IVoting voting;
+
+  constructor(uint64 subscriptionId, address votingaddr) VRFConsumerBaseV2(vrfCoordinator) {
     COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
     s_owner = msg.sender;
     s_subscriptionId = subscriptionId;
+    voting = IVoting(votingaddr);
+    mod = voting.getNumberOfCandidates();
   }
 
   // Assumes the subscription is funded sufficiently.
@@ -62,9 +69,11 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
     uint256, /* requestId */
     uint256[] memory randomWords
   ) internal override {
-    s_randomWords = (randomWords[0] % 20) + 1;
+    s_randomWords = (randomWords[0] % mod) + 1;
   }
-
+function getRandomNum() external onlyOwner  {
+  getrandTime = block.timestamp + 20 minutes;
+}
   modifier onlyOwner() {
     require(msg.sender == s_owner);
     _;

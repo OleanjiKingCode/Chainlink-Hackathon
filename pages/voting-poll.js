@@ -10,6 +10,7 @@ import { useRouter } from "next/router"
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
 import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
+import { concat } from 'ethers/lib/utils';
 
 export default function VotingPoll() {
     const[loading,setLoading]= useState(false)
@@ -27,7 +28,7 @@ export default function VotingPoll() {
     const[ended,setEnded]=useState(false)
     const[rand,setRand]= useState(0)
     const[finished, setFinished] = useState(false)
-
+    const timeAnchor = 32;
 
 
     const getProviderOrSigner = async (needSigner = false) => {
@@ -77,25 +78,28 @@ export default function VotingPoll() {
 
        
         const __started = checkifStarted();
-    
+        // const __ended = checkifEnded();
         if(__started){
            fetchVotersList()
             checkifEnded();
+            checkIfFinished();
         }
-
-       
+        
         const EndedInterval = setInterval(async function () {
             const _Started = await checkifStarted();
             if (_Started) {
               const _Ended = await checkifEnded();
               if (_Ended) {
-                  console.log(_Ended + "dwef    wefwefwef")
-                  
-                  await fetchVotersList()
-                clearInterval(EndedInterval);
+                const _finished = await checkIfFinished();
+                await fetchVotersList();
+                if(_finished) {
+                    await fetchVotersList();
+                    clearInterval(EndedInterval);
+                }
+               
               }
             }
-          }, 5 * 1000);
+          }, 1 * 1000);
         }
     }, [walletConnected]);
 
@@ -175,7 +179,7 @@ export default function VotingPoll() {
             const ended = await contract.applicationEnded();
 
             const hasended = ended.lt(Math.floor(Date.now() / 1000));
-
+            console.log("don end 000" + hasended)
             if(hasended){
                 setEnded(true)
                 
@@ -213,7 +217,7 @@ export default function VotingPoll() {
         setName(_name);
       
         setMembers(list);
-        console.log(members)
+       
         } catch (m) {
             console.log(m)
         }
@@ -224,21 +228,61 @@ export default function VotingPoll() {
         try {
             const signer = await getProviderOrSigner(true);
             const vrfContract = new Contract(VRFAddress,VRF.abi,signer);
-            const request =  await vrfContract.requestRandomWords();
-           
-            await request.wait()
-            const delay = ms => new Promise(res => setTimeout(res, ms));
-            await delay(10000);
+            // await vrfContract.getRandomNum()
+            const delay = ms => new Promise(res => setTimeout(res, ms)); 
+            const getRandomNum = await vrfContract.getRandomNum();
+            const rand = await vrfContract.requestRandomWords();
+            await getRandomNum.wait()
+            await rand.wait()
+            await delay(100000);
             const id = await vrfContract.s_requestId();
-           console.log(id)
-            await delay(60000);
-            console.log("jnn")
-            const RandomNum = await vrfContract.s_randomWords()
-            setRand(RandomNum);
+            console.log(id);
+            await delay(420000);
+            console.log("Now to get the rand number ")
+            const RandomNum = await vrfContract.s_randomWords();
+            console.log(RandomNum);
+            console.log(RandomNum.toNumber())
+            let randnumber = RandomNum.toNumber()
+            await delay(40000);
+            setRand(randnumber);
+            await delay(40000);
             console.log(rand)
-            setFinished(true)
+           setFinished(true);
         } catch (m) {
             console.log(m)
+        }
+    }
+    const checkIfFinished = async () =>{
+        try {
+            const provider = await getProviderOrSigner();
+            const vrfContract = new Contract(VRFAddress,VRF.abi,provider);
+               
+            const finished = await vrfContract.getrandTime();
+            if (finished !== 0) {
+           
+            const RandomNum = await vrfContract.s_randomWords();
+            let randnumber = RandomNum.toNumber()
+           
+            setRand(randnumber);
+            const hasfinished = finished.lt(Math.floor(Date.now() / 1000));
+            console.log("it has finished" + hasfinished)
+            if(hasfinished){
+                    console.log("banji ithink this might work")
+                setFinished(true)
+                
+            }else {
+                setFinished(false)
+            }
+            
+            return hasfinished;
+            }
+            else{
+                return false 
+            }
+            
+        } catch (error) {
+            console.log(error)
+            return false 
         }
     }
     const checIfAlreadyACandidate = async() =>{
@@ -445,7 +489,7 @@ export default function VotingPoll() {
                 )
             }
         }
-        if(started && ended) { 
+        if(started && ended && !finished) { 
             if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
                 return(
                     <div>
@@ -531,7 +575,7 @@ export default function VotingPoll() {
                 )
             }
         }
-        if(finished) { 
+        if(ended && finished) { 
             if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
                 return(
                     <div>

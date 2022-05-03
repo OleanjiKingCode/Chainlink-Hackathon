@@ -14,20 +14,18 @@ async function main() {
 
   const Voting = await hre.ethers.getContractFactory("VotingDappByOleanji");
   const voting = await Voting.deploy(addr);
-
   await voting.deployed();
+  console.log("vote deployed to:", voting.address);
+  const addr2 =voting.address;
 
   const VRF = await hre.ethers.getContractFactory("VRFv2Consumer");
-  const vrf = await VRF.deploy("3680");
-
+  const vrf = await VRF.deploy("3680",addr2);
   await vrf.deployed();
 
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
-
-
   export const VotingAddress ="${voting.address}"
   export const VRFAddress ="${vrf.address}"
   `)
