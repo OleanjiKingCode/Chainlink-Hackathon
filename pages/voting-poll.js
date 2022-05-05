@@ -183,7 +183,7 @@ export default function VotingPoll() {
             const hasended = ended.lt(Math.floor(Date.now() / 1000));
             
             if(hasended){
-                setEnded(true);-
+                setEnded(true);
                 
             }else {
                 setEnded(false)
