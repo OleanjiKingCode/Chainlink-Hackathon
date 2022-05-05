@@ -22,6 +22,10 @@ async function main() {
   const vrf = await VRF.deploy("3680",addr2);
   await vrf.deployed();
 
+  const Keeper = await hre.ethers.getContractFactory("Counter");
+  const keepers = await Keeper.deploy("7200",addr2);
+  await keepers.deployed();
+
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"

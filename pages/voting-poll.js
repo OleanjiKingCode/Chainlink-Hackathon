@@ -99,8 +99,10 @@ export default function VotingPoll() {
                
               }
             }
-          }, 1 * 1000);
+          }, 5 * 1000);
         }
+
+
     }, [walletConnected]);
 
 
@@ -140,20 +142,20 @@ export default function VotingPoll() {
     
     }
 
-    const startApplication = async () =>{
-        try {
-            const signer = await getProviderOrSigner(true);
-            const contract = new Contract(VotingAddress,VOTE.abi,signer);
-            const start = await contract.startApplication()
-            setLoading(true)
-            await start.wait()
-            setLoading(false)
-           await checkifStarted();
-        } catch (e) {
-            console.log(e)
-        }
+    // const startApplication = async () =>{
+    //     try {
+    //         const signer = await getProviderOrSigner(true);
+    //         const contract = new Contract(VotingAddress,VOTE.abi,signer);
+    //         const start = await contract.startApplication()
+    //         setLoading(true)
+    //         await start.wait()
+    //         setLoading(false)
+    //        await checkifStarted();
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
        
-    }
+    // }
 
     const checkifStarted = async ()=>{
         try {
@@ -179,9 +181,9 @@ export default function VotingPoll() {
             const ended = await contract.applicationEnded();
 
             const hasended = ended.lt(Math.floor(Date.now() / 1000));
-            console.log("don end 000" + hasended)
+            
             if(hasended){
-                setEnded(true)
+                setEnded(true);-
                 
             }else {
                 setEnded(false)
@@ -352,15 +354,18 @@ export default function VotingPoll() {
                 
 
                 return (
-                    <button onClick={startApplication}>
-                        START APPLICATION
-                    </button>
+                    // <button onClick={startApplication}>
+                    //     START APPLICATION
+                    // </button>
+                    <div>
+                        Application has a 2 hour interval pls wait 
+                    </div>
                 )
         }
         if(alredyAMemberOfDAO && !started){
             return (
                 <h3>
-                    Application Process Has Not Started.
+                    Application Process Has Not Started pls Wait.
                 </h3>
             )
         }

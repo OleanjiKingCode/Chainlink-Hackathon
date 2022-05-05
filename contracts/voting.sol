@@ -36,6 +36,7 @@ contract VotingDappByOleanji is Ownable {
 
     bool public applicationStarted=false;
     uint public applicationEnded;
+    bool public getRandNum = false;
 
     function getNumberOfCandidates () external view returns(uint) {
        return numofappliedCandidates;
@@ -49,12 +50,19 @@ contract VotingDappByOleanji is Ownable {
     mapping(address => bool) public votedAlready;
 
     function startApplication() public onlyOwner {
-        
         applicationStarted = true;
         applicationEnded = block.timestamp + 7 minutes;
         
     }
-
+     function SetRandomNum() public onlyOwner {
+       getRandNum = true;
+        
+    }
+    function ResetApplication() external {
+        applicationStarted = false;
+        applicationEnded = 0;
+        getRandNum =false;
+    }
    
      function IsACandidate(address sender) external view returns(bool){
        bool isACandidate = areYouACandidate[sender];

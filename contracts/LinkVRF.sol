@@ -54,7 +54,7 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
   }
 
   // Assumes the subscription is funded sufficiently.
-  function requestRandomWords() external onlyOwner {
+  function requestRandomWords() external {
     // Will revert if subscription is not set and funded.
     s_requestId = COORDINATOR.requestRandomWords(
       keyHash,
@@ -71,8 +71,8 @@ contract VRFv2Consumer is VRFConsumerBaseV2 {
   ) internal override {
     s_randomWords = (randomWords[0] % mod) + 1;
   }
-function getRandomNum() external onlyOwner  {
-  getrandTime = block.timestamp + 20 minutes;
+function getRandomNum() external  {
+  getrandTime = block.timestamp + 17 minutes;
 }
   modifier onlyOwner() {
     require(msg.sender == s_owner);
