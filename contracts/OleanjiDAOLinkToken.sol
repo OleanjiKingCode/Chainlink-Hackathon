@@ -112,7 +112,9 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
           return members;
     }
     
-
+    function _mintForWinners(address sender, uint amount) external {
+        _mint(sender, amount);
+    }
 
     function getReserve() public view returns (uint) {
         return balanceOf(address(this));

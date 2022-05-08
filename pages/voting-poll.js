@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
 import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
-import { concat } from 'ethers/lib/utils';
+
 
 export default function VotingPoll() {
     const[loading,setLoading]= useState(false)
@@ -28,7 +28,7 @@ export default function VotingPoll() {
     const[ended,setEnded]=useState(false)
     const[rand,setRand]= useState(0)
     const[finished, setFinished] = useState(false)
-    const timeAnchor = 32;
+    // const timeAnchor = 32;
 
 
     const getProviderOrSigner = async (needSigner = false) => {
@@ -75,33 +75,49 @@ export default function VotingPoll() {
         disableInjectedProvider: false,
         });
         connectWallet();
-
+        console.log("sdcjnsdhj")
        
-        const __started = checkifStarted();
-        // const __ended = checkifEnded();
-        if(__started){
-           fetchVotersList()
-            checkifEnded();
-            checkIfFinished();
-        }
+        // const __started = checkifStarted();
+        // // const __ended = checkifEnded();
+        // if(__started){
+        //     whats running
+        //    fetchVotersList()
+        //     checkifEnded();
+        //     checkIfFinished();
+        // }
+
         
         const EndedInterval = setInterval(async function () {
             const _Started = await checkifStarted();
             if (_Started) {
+                console.log("ncjin")
               const _Ended = await checkifEnded();
               if (_Ended) {
+                const _get = CheckIfSetRandNum();
+                if (_get) {
+                await GetRandomNumber();
                 const _finished = await checkIfFinished();
                 await fetchVotersList();
                 if(_finished) {
                     await fetchVotersList();
+                    await CreditWinnerAndFinalise();
                     clearInterval(EndedInterval);
                 }
-               
+            }
               }
             }
           }, 5 * 1000);
-        }
 
+        // const EndedInterval2 = setInterval(async function () {
+        //     const _Ended = await checkifEnded();
+        //     if (_Ended) {
+               
+        //         clearInterval(EndedInterval2);
+        //         } }
+        //   }, 5* 1000);
+
+    }
+        
 
     }, [walletConnected]);
 
@@ -177,6 +193,8 @@ export default function VotingPoll() {
     const checkifEnded = async ()=>{
         try {
             const provider = await getProviderOrSigner();
+            const signer = await getProviderOrSigner(true);
+            const Votecontract = new Contract(VotingAddress,VOTE.abi,signer);
             const contract = new Contract(VotingAddress,VOTE.abi,provider);
             const ended = await contract.applicationEnded();
 
@@ -184,7 +202,8 @@ export default function VotingPoll() {
             
             if(hasended){
                 setEnded(true);
-                
+                const setRandnum = await Votecontract.SetRandomNum();
+                await setRandnum.wait()
             }else {
                 setEnded(false)
             }
@@ -226,6 +245,22 @@ export default function VotingPoll() {
         
 
     }
+    const CheckIfSetRandNum = async () => {
+        try {
+            const provider = await getProviderOrSigner();
+            const contract = new Contract(VotingAddress,VOTE.abi,provider);
+            const get  = await contract.getRandNum();
+            if(get){
+                return true;
+            }
+           else{
+               return false;
+           }
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
     const GetRandomNumber = async () =>{
         try {
             const signer = await getProviderOrSigner(true);
@@ -254,14 +289,16 @@ export default function VotingPoll() {
             console.log(m)
         }
     }
+
     const checkIfFinished = async () =>{
         try {
             const provider = await getProviderOrSigner();
             const vrfContract = new Contract(VRFAddress,VRF.abi,provider);
                
             const finished = await vrfContract.getrandTime();
-            if (finished !== 0) {
-           
+            
+            if (finished > 0) {
+                console.log(finished);
             const RandomNum = await vrfContract.s_randomWords();
             let randnumber = RandomNum.toNumber()
            
@@ -287,6 +324,24 @@ export default function VotingPoll() {
             return false 
         }
     }
+
+    const CreditWinnerAndFinalise = async ()=>{
+        try {
+            const signer = await getProviderOrSigner(true);
+           
+            const contract = new Contract(VotingAddress,VOTE.abi,signer);
+            const bigRand = ethers.utils.parseEther(rand);
+            const transaction = await contract.CreditWinner(bigRand);
+            await transaction.wait();
+            const delay = ms => new Promise(res => setTimeout(res, ms)); 
+            await delay(300000);
+            const finalising = await contract.ResetApplication();
+            await finalising.wait();
+        } catch (r) {
+            console.log(r);
+        }
+    }
+
     const checIfAlreadyACandidate = async() =>{
         try {
             const signer = await getProviderOrSigner(true);
@@ -365,7 +420,7 @@ export default function VotingPoll() {
         if(alredyAMemberOfDAO && !started){
             return (
                 <h3>
-                    Application Process Has Not Started pls Wait.
+                    Application Process Has Not Started pls Wait (2hrs Interval).
                 </h3>
             )
         }
@@ -548,9 +603,10 @@ export default function VotingPoll() {
             else {
                 return (
                     <div>
-                        <button onClick={GetRandomNumber}>
+                        {/* <button onClick={GetRandomNumber}>
                             Get random person
-                        </button>
+                        </button> */}
+                         <h3>PLS WAIT FOR RESULTS </h3>
                         {
                                     
                             members.map((lists,i) => {
@@ -599,7 +655,7 @@ export default function VotingPoll() {
             {
             return (
                 <div>
-                     <h3> The winner is {rand} </h3>
+                     <h3> The winner is {rand} You only have 5 minutes to check this</h3>
                     {
                         
                         members.map((lists,i) => {
@@ -634,7 +690,7 @@ export default function VotingPoll() {
             else {
                 return (
                     <div>
-                          <h3> The winner is {rand} </h3>
+                          <h3> The winner is {rand} You only have 5 minutes to check this </h3>
                         {
                                     
                             members.map((lists,i) => {

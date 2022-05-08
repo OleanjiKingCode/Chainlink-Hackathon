@@ -5,6 +5,7 @@ import { ethers,providers, Contract } from "ethers";
 import { useEffect, useRef, useState, useContext } from "react";
 import { LinkTokenAddress, OwnersAddress } from "../constant"
 import { OwnersAccount } from '../context';
+import 'bootstrap/dist/css/bootstrap.css'
 import { useRouter } from "next/router"
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 
@@ -88,21 +89,20 @@ export default function AllMembers() {
         }
     };
 
-const renderButton = () =>{
-    if (account === OwnersAddress){
-        return (
-            router.push('/')
-        )
-    }
-}
+// const renderButton = () =>{
+//     if (account === OwnersAddress){
+//         return (
+//             router.push('/')
+//         )
+//     }
+// }
 
     return (
         
         <div>
             {/* {renderButton()} */}
             <Head>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" >
-      </link>
+            
 </Head>
         {/* <div>
             {renderButton()}

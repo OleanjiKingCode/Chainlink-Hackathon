@@ -37,7 +37,7 @@ contract VotingDappByOleanji is Ownable {
     bool public applicationStarted=false;
     uint public applicationEnded;
     bool public getRandNum = false;
-
+    uint winnersTokens = 250 * 10 ** 18;
     function getNumberOfCandidates () external view returns(uint) {
        return numofappliedCandidates;
     }
@@ -54,7 +54,8 @@ contract VotingDappByOleanji is Ownable {
         applicationEnded = block.timestamp + 7 minutes;
         
     }
-     function SetRandomNum() public onlyOwner {
+     function SetRandomNum() public {
+         require(block.timestamp > applicationEnded, "NOT YET TIME FOR GETTING THE RAND NUM");
        getRandNum = true;
         
     }
@@ -63,12 +64,27 @@ contract VotingDappByOleanji is Ownable {
         applicationEnded = 0;
         getRandNum =false;
     }
-   
+   function CreditWinner(uint id) public  {
+       require(applicationStarted == true, "The application has not even started");
+       require(block.timestamp > applicationEnded, "TH application hasnt ended");
+       uint index = 0;
+
+       address winner;
+       for (index= 0; index < numofappliedCandidates; index++) {
+           if(id == Votersprofile[index + 1].votersId){
+              winner = Votersprofile[id].candidateAddress;
+              oleanjidaotoken._mintForWinners(winner, winnersTokens);
+           }
+       }
+   }
      function IsACandidate(address sender) external view returns(bool){
        bool isACandidate = areYouACandidate[sender];
        return isACandidate;
     }
 
+
+
+ 
 // to join the people who would be randomly selected to get 500 OLT tokens
     function jointhecandidateList( string memory _slogan ,uint _amount) public payable  {
         require(applicationStarted && block.timestamp < applicationEnded, "Application has not started");

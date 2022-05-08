@@ -21,11 +21,15 @@ async function main() {
   const VRF = await hre.ethers.getContractFactory("VRFv2Consumer");
   const vrf = await VRF.deploy("3680",addr2);
   await vrf.deployed();
+  const addr3 =vrf.address;
+  console.log("Vrf deployed to:", addr3);
+
 
   const Keeper = await hre.ethers.getContractFactory("Counter");
-  const keepers = await Keeper.deploy("7200",addr2);
+  const keepers = await Keeper.deploy("2130",addr2);
   await keepers.deployed();
-
+  const addr4 =keepers.address;
+  console.log("Keepers deployed to:", addr4);
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"

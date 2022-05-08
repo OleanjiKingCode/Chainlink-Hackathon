@@ -4,6 +4,7 @@ import styles from "../styles/Home.module.css";
 import Web3Modal from "web3modal";
 import { providers} from "ethers";
 import Link from "next/link"
+import 'bootstrap/dist/css/bootstrap.css'
 import { OwnersAccount } from '../context';
 import { useEffect, useRef, useState } from "react";
 import { LinkTokenAddress, OwnersAddress ,  abi } from '../constant';
@@ -73,8 +74,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <div>
       <Head>
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" >
-      </link>
+     
       <title>Hackathon</title>
         <meta name="description" content="Oleanji-Hackathon-Dapp" />
         <link rel="icon" href="/favicon.ico" />
