@@ -1,103 +1,154 @@
 //SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.7;
 
 
 import "./IOleanjiDAOLinkToken.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-contract VotingDappByOleanji is Ownable {
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "hardhat/console.sol"; 
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-  // making instances of the token and its interface there may be another way but this is what i did 
-  // without help :D
+error UpkeepNotNeeded();
+
+
+contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Ownable {
+     using Counters for Counters.Counter;
+    // making instances of the token and its interface there may be another way but this is what i did 
+    // without help :D
+    uint public immutable interval;
+    uint public lastTimeStamp;
     ERC20 linktoken;
     IOleanjiDAOLinkToken oleanjidaotoken;
-    constructor(address _tokenAddress){
-        linktoken =ERC20(_tokenAddress);
-        oleanjidaotoken = IOleanjiDAOLinkToken(_tokenAddress);
-    }
-    
+
     uint votingPrice= 150;
-    uint8 public numofappliedCandidates;
+    Counters.Counter public numofappliedCandidates;
+    
 
     // uint8 public maxnumofAppliableCandidates = 20;
     // to check if a candidate or not
     mapping(address => bool) public areYouACandidate;
-// a struct to kepp track of the id and other information about the candidate
+
+    // a struct to kepp track of the id and other information about the candidate
     struct Voters{
         uint votersId;
-       
         address candidateAddress;
         string Slogan;
-        
     }
-//mapping to get individual candidate or voters i mix up the english here
+
+    //mapping to get individual candidate or voters i mix up the english here
     mapping(uint256 => Voters) private Votersprofile;
 
-    bool public applicationStarted=false;
-    uint public applicationEnded;
-    bool public getRandNum = false;
+    bool public applicationStarted=true;
+     bool public applicationCalculating=false;
+    // uint public applicationEnded;
+    // bool public getRandNum = false;
+
     uint winnersTokens = 250 * 10 ** 18;
-    function getNumberOfCandidates () external view returns(uint) {
-       return numofappliedCandidates;
-    }
-    //to get the voting price
-    function getVotingPrice() public view returns(uint){
-        return votingPrice;
-    }
-  
-//check if voted already
+
+
     mapping(address => bool) public votedAlready;
 
-    function startApplication() public onlyOwner {
-        applicationStarted = true;
-        applicationEnded = block.timestamp + 7 minutes;
-        
+
+  VRFCoordinatorV2Interface COORDINATOR;
+
+
+  uint64 s_subscriptionId;
+
+
+  address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
+
+
+  bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+
+  uint32 callbackGasLimit = 300000;
+
+ 
+  uint16 requestConfirmations = 3;
+
+  uint32 numWords =  1;
+
+  uint256 public s_randomLuck;
+  address public winner;
+  uint256 public s_requestId;
+  address s_owner;
+  
+
+
+    constructor(
+    address _tokenAddress,
+    uint updateInterval,
+    uint64 subscriptionId) 
+    VRFConsumerBaseV2(vrfCoordinator)
+    {
+        interval = updateInterval;
+        lastTimeStamp = block.timestamp;
+        linktoken =ERC20(_tokenAddress);
+        oleanjidaotoken = IOleanjiDAOLinkToken(_tokenAddress);
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        s_owner = msg.sender;
+        s_subscriptionId = subscriptionId;
+    
     }
-     function SetRandomNum() public {
-         require(block.timestamp > applicationEnded, "NOT YET TIME FOR GETTING THE RAND NUM");
-       getRandNum = true;
+    
+    // function startApplication() public onlyOwner {
+    //     applicationStarted = true;
+    //     applicationEnded = block.timestamp + 7 minutes;
         
-    }
-    function ResetApplication() external {
-        applicationStarted = false;
-        applicationEnded = 0;
-        getRandNum =false;
+    // }
+    //  function SetRandomNum() public {
+    //      require(block.timestamp > applicationEnded, "NOT YET TIME FOR GETTING THE RAND NUM");
+    //    getRandNum = true;
+        
+    // }
+
+    function ResetApplication() public {
+        applicationStarted=true;
+        applicationCalculating=false;
+        lastTimeStamp = block.timestamp;
+        
     }
    function CreditWinner(uint id) public  {
-       require(applicationStarted == true, "The application has not even started");
-       require(block.timestamp > applicationEnded, "TH application hasnt ended");
-       uint index = 0;
-
-       address winner;
-       for (index= 0; index < numofappliedCandidates; index++) {
+       require(!applicationStarted && applicationCalculating, "The application has not even started");
+       uint256 index = 0;
+       uint256 currentNumber = numofappliedCandidates.current();
+       for (index= 0; index < currentNumber; index++) {
            if(id == Votersprofile[index + 1].votersId){
               winner = Votersprofile[id].candidateAddress;
               oleanjidaotoken._mintForWinners(winner, winnersTokens);
            }
        }
    }
+
+
+     function getNumberOfCandidates () external view returns(uint) {
+       return numofappliedCandidates.current();
+    }
+    //to get the voting price
+    function getVotingPrice() public view returns(uint){
+        return votingPrice;
+    }
+
      function IsACandidate(address sender) external view returns(bool){
        bool isACandidate = areYouACandidate[sender];
        return isACandidate;
     }
 
 
-
- 
-// to join the people who would be randomly selected to get 500 OLT tokens
+    // to join the people who would be randomly selected to get 500 OLT tokens
     function jointhecandidateList( string memory _slogan ,uint _amount) public payable  {
-        require(applicationStarted && block.timestamp < applicationEnded, "Application has not started");
+        require(applicationStarted && !applicationCalculating, "Application has not started");
         require(!areYouACandidate[msg.sender], "You are already a candidate to be voted for");
         require(oleanjidaotoken.IsAMember(msg.sender) == true , "You are  a false member" );
-        // require(numofappliedCandidates < maxnumofAppliableCandidates, "the candidates spots are all full");
-       
-  
 
-        numofappliedCandidates +=1;
-        Votersprofile[numofappliedCandidates] =Voters(
-            numofappliedCandidates,
-           
+    
+        numofappliedCandidates.increment();
+            uint256 current =  numofappliedCandidates.current();
+        Votersprofile[current] =Voters(
+            current,
             msg.sender,
             _slogan
         );
@@ -108,12 +159,13 @@ contract VotingDappByOleanji is Ownable {
 
 
     function fetchVotersList () public view returns(Voters[] memory) {
-        Voters[] memory list = new Voters[] (numofappliedCandidates);
+         uint256 current =  numofappliedCandidates.current();
+        Voters[] memory list = new Voters[] (current);
         uint index = 0;
-        for (uint i = 0; i < numofappliedCandidates; i++){
+        uint256 currentNumber = numofappliedCandidates.current();
+        for (uint i = 0; i < currentNumber; i++){
             uint currentnum = Votersprofile[i + 1].votersId;
             Voters storage currentItem = Votersprofile[currentnum];
-            
             list[index] = currentItem;
             index += 1;
         }
@@ -121,5 +173,49 @@ contract VotingDappByOleanji is Ownable {
         return list;
     }
   
+    function checkUpkeep(
+        bytes memory /* checkData */
+        ) public
+          view
+          override
+           returns (bool upkeepNeeded, bytes memory /* performData */) {
+        bool isOpen = applicationStarted;
+        bool itsTime = ((block.timestamp - lastTimeStamp) > interval);
+        upkeepNeeded = (isOpen && itsTime);
+        return (upkeepNeeded, "0x0");
+      
+    }
+
+    function performUpkeep(bytes calldata /* performData */) external override{
+       (bool upkeepNeeded, ) = checkUpkeep("");
+        if(!upkeepNeeded) {
+            revert UpkeepNotNeeded();
+             
+        
+        }
+        s_requestId = COORDINATOR.requestRandomWords(
+        keyHash,
+        s_subscriptionId,
+        requestConfirmations,
+        callbackGasLimit,
+        numWords
+        );
+       
+       
+    }
+
+    function fulfillRandomWords(
+    uint256, /* requestId */
+    uint256[] memory randomWords
+  ) internal override {
+    uint256 currentNumber = numofappliedCandidates.current();
+    s_randomLuck = (randomWords[0] % currentNumber) + 1;
+    applicationStarted = false;
+    applicationCalculating =true;
+    CreditWinner(s_randomLuck);
+    ResetApplication();
+
+  }
+
    
 }

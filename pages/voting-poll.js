@@ -9,7 +9,7 @@ import { useRouter } from "next/router"
 
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
-import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
+// import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
 
 
 export default function VotingPoll() {
@@ -75,7 +75,7 @@ export default function VotingPoll() {
         disableInjectedProvider: false,
         });
         connectWallet();
-        console.log("sdcjnsdhj")
+        console.log("sdcjnsdhj");
        
         // const __started = checkifStarted();
         // // const __ended = checkifEnded();
@@ -87,34 +87,34 @@ export default function VotingPoll() {
         // }
 
         
-        const EndedInterval = setInterval(async function () {
-            const _Started = await checkifStarted();
-            if (_Started) {
-                console.log("ncjin")
-              const _Ended = await checkifEnded();
-              if (_Ended) {
-                const _get = CheckIfSetRandNum();
-                if (_get) {
-                await GetRandomNumber();
-                const _finished = await checkIfFinished();
-                await fetchVotersList();
-                if(_finished) {
-                    await fetchVotersList();
-                    await CreditWinnerAndFinalise();
-                    clearInterval(EndedInterval);
-                }
-            }
-              }
-            }
-          }, 5 * 1000);
+        // const EndedInterval = setInterval(async function () {
+        //     const _Started = await checkifStarted();
+        //     if (_Started) {
+        //         console.log("ncjin")
+        //       const _Ended = await checkifEnded();
+        //       if (_Ended) {
+        //         const _get = CheckIfSetRandNum();
+        //         if (_get) {
+        //         await GetRandomNumber();
+        //         const _finished = await checkIfFinished();
+        //         await fetchVotersList();
+        //         if(_finished) {
+        //             await fetchVotersList();
+        //             await CreditWinnerAndFinalise();
+        //            
+        //         }
+        //     }
+        //       }
+        //     }
+        //   }, 5 * 1000);
 
-        // const EndedInterval2 = setInterval(async function () {
-        //     const _Ended = await checkifEnded();
-        //     if (_Ended) {
-               
-        //         clearInterval(EndedInterval2);
-        //         } }
-        //   }, 5* 1000);
+        const EndedInterval2 = setInterval(async function () {
+                await CheckIfSetRandNum(); 
+                if(rand > 0) {
+                    clearInterval(EndedInterval2);
+                }
+            },
+             5* 1000);
 
     }
         
@@ -173,47 +173,47 @@ export default function VotingPoll() {
        
     // }
 
-    const checkifStarted = async ()=>{
-        try {
+    // const checkifStarted = async ()=>{
+    //     try {
          
-            const provider = await getProviderOrSigner();
+    //         const provider = await getProviderOrSigner();
            
-            const votingContract = new Contract(VotingAddress,VOTE.abi,provider);
+    //         const votingContract = new Contract(VotingAddress,VOTE.abi,provider);
            
-            const hasStarted = await votingContract.applicationStarted();
-            setStarted(hasStarted)
-            console.log(hasStarted)
-            return hasStarted;
+    //         const hasStarted = await votingContract.applicationStarted();
+    //         setStarted(hasStarted)
+    //         console.log(hasStarted)
+    //         return hasStarted;
            
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    }
-    const checkifEnded = async ()=>{
-        try {
-            const provider = await getProviderOrSigner();
-            const signer = await getProviderOrSigner(true);
-            const Votecontract = new Contract(VotingAddress,VOTE.abi,signer);
-            const contract = new Contract(VotingAddress,VOTE.abi,provider);
-            const ended = await contract.applicationEnded();
+    //     } catch (error) {
+    //         console.log(error)
+    //         return false
+    //     }
+    // }
+    // const checkifEnded = async ()=>{
+    //     try {
+    //         const provider = await getProviderOrSigner();
+    //         const signer = await getProviderOrSigner(true);
+    //         const Votecontract = new Contract(VotingAddress,VOTE.abi,signer);
+    //         const contract = new Contract(VotingAddress,VOTE.abi,provider);
+    //         const ended = await contract.applicationEnded();
 
-            const hasended = ended.lt(Math.floor(Date.now() / 1000));
+    //         const hasended = ended.lt(Math.floor(Date.now() / 1000));
             
-            if(hasended){
-                setEnded(true);
-                const setRandnum = await Votecontract.SetRandomNum();
-                await setRandnum.wait()
-            }else {
-                setEnded(false)
-            }
+    //         if(hasended){
+    //             setEnded(true);
+    //             const setRandnum = await Votecontract.SetRandomNum();
+    //             await setRandnum.wait()
+    //         }else {
+    //             setEnded(false)
+    //         }
             
-            return hasended;
-        } catch (error) {
-            console.log(error)
-            return false
-        }
-    }
+    //         return hasended;
+    //     } catch (error) {
+    //         console.log(error)
+    //         return false
+    //     }
+    // }
     const fetchVotersList = async () =>{
         try {
             
@@ -249,98 +249,101 @@ export default function VotingPoll() {
         try {
             const provider = await getProviderOrSigner();
             const contract = new Contract(VotingAddress,VOTE.abi,provider);
-            const get  = await contract.getRandNum();
-            if(get){
-                return true;
+            const get  = await contract.s_randomLuck();
+            const rand = get.toNumber();
+            if(rand == 0){
+                return false;
             }
            else{
-               return false;
+              
+               setRand(rand);
+               return true;
            }
         } catch (error) {
             console.log(error);
             return false;
         }
     }
-    const GetRandomNumber = async () =>{
-        try {
-            const signer = await getProviderOrSigner(true);
-            const vrfContract = new Contract(VRFAddress,VRF.abi,signer);
-            // await vrfContract.getRandomNum()
-            const delay = ms => new Promise(res => setTimeout(res, ms)); 
-            const getRandomNum = await vrfContract.getRandomNum();
-            const rand = await vrfContract.requestRandomWords();
-            await getRandomNum.wait()
-            await rand.wait()
-            await delay(100000);
-            const id = await vrfContract.s_requestId();
-            console.log(id);
-            await delay(420000);
-            console.log("Now to get the rand number ")
-            const RandomNum = await vrfContract.s_randomWords();
-            console.log(RandomNum);
-            console.log(RandomNum.toNumber())
-            let randnumber = RandomNum.toNumber()
-            await delay(40000);
-            setRand(randnumber);
-            await delay(40000);
-            console.log(rand)
-           setFinished(true);
-        } catch (m) {
-            console.log(m)
-        }
-    }
+    // const GetRandomNumber = async () =>{
+    //     try {
+    //         const signer = await getProviderOrSigner(true);
+    //         const vrfContract = new Contract(VRFAddress,VRF.abi,signer);
+    //         // await vrfContract.getRandomNum()
+    //         const delay = ms => new Promise(res => setTimeout(res, ms)); 
+    //         const getRandomNum = await vrfContract.getRandomNum();
+    //         const rand = await vrfContract.requestRandomWords();
+    //         await getRandomNum.wait()
+    //         await rand.wait()
+    //         await delay(100000);
+    //         const id = await vrfContract.s_requestId();
+    //         console.log(id);
+    //         await delay(420000);
+    //         console.log("Now to get the rand number ")
+    //         const RandomNum = await vrfContract.s_randomWords();
+    //         console.log(RandomNum);
+    //         console.log(RandomNum.toNumber())
+    //         let randnumber = RandomNum.toNumber()
+    //         await delay(40000);
+    //         setRand(randnumber);
+    //         await delay(40000);
+    //         console.log(rand)
+    //        setFinished(true);
+    //     } catch (m) {
+    //         console.log(m)
+    //     }
+    // }
 
-    const checkIfFinished = async () =>{
-        try {
-            const provider = await getProviderOrSigner();
-            const vrfContract = new Contract(VRFAddress,VRF.abi,provider);
+    // const checkIfFinished = async () =>{
+    //     try {
+    //         const provider = await getProviderOrSigner();
+    //         const vrfContract = new Contract(VRFAddress,VRF.abi,provider);
                
-            const finished = await vrfContract.getrandTime();
+    //         const finished = await vrfContract.getrandTime();
             
-            if (finished > 0) {
-                console.log(finished);
-            const RandomNum = await vrfContract.s_randomWords();
-            let randnumber = RandomNum.toNumber()
+    //         if (finished > 0) {
+    //             console.log(finished);
+    //         const RandomNum = await vrfContract.s_randomWords();
+    //         let randnumber = RandomNum.toNumber()
            
-            setRand(randnumber);
-            const hasfinished = finished.lt(Math.floor(Date.now() / 1000));
-            console.log("it has finished" + hasfinished)
-            if(hasfinished){
-                    console.log("banji ithink this might work")
-                setFinished(true)
+    //         setRand(randnumber);
+    //         const hasfinished = finished.lt(Math.floor(Date.now() / 1000));
+    //         console.log("it has finished" + hasfinished)
+    //         if(hasfinished){
+    //                 console.log("banji ithink this might work")
+    //             setFinished(true)
                 
-            }else {
-                setFinished(false)
-            }
+    //         }else {
+    //             setFinished(false)
+    //         }
             
-            return hasfinished;
-            }
-            else{
-                return false 
-            }
+    //         return hasfinished;
+    //         }
+    //         else{
+    //             return false 
+    //         }
             
-        } catch (error) {
-            console.log(error)
-            return false 
-        }
-    }
+    //     } catch (error) {
+    //         console.log(error)
+    //         return false 
+    //     }
+    // }
 
-    const CreditWinnerAndFinalise = async ()=>{
-        try {
-            const signer = await getProviderOrSigner(true);
+    // const CreditWinnerAndFinalise = async ()=>{
+    //     try {
+    //         const signer = await getProviderOrSigner(true);
            
-            const contract = new Contract(VotingAddress,VOTE.abi,signer);
-            const bigRand = ethers.utils.parseEther(rand);
-            const transaction = await contract.CreditWinner(bigRand);
-            await transaction.wait();
-            const delay = ms => new Promise(res => setTimeout(res, ms)); 
-            await delay(300000);
-            const finalising = await contract.ResetApplication();
-            await finalising.wait();
-        } catch (r) {
-            console.log(r);
-        }
-    }
+    //         const contract = new Contract(VotingAddress,VOTE.abi,signer);
+    //         const bigRand = ethers.utils.parseEther(rand);
+    //         const transaction = await contract.CreditWinner(bigRand);
+    //         await transaction.wait();
+    //         const delay = ms => new Promise(res => setTimeout(res, ms)); 
+    //         await delay(300000);
+    //         const finalising = await contract.ResetApplication();
+    //         await finalising.wait();
+    //     } catch (r) {
+    //         console.log(r);
+    //     }
+    // }
 
     const checIfAlreadyACandidate = async() =>{
         try {
@@ -386,347 +389,404 @@ export default function VotingPoll() {
         router.push('/')
            
     }
-    const renderButton = () =>
-    {
+    // const renderButton = () =>
+    // {
        
-        if (!walletConnected) {
-            return (
-              <button onClick={connectWallet} className={styles.button}>
-                Connect your wallet
-              </button>
-            );
-          }
-          if(loading){
-              return (
-                  <div>
-                      <button>
-                            ...Loading...
-                        </button>
-                  </div>
-              )
-          }
-        if(account == OwnersAddress && !started ) {
+    //     if (!walletConnected) {
+    //         return (
+    //           <button onClick={connectWallet} className={styles.button}>
+    //             Connect your wallet
+    //           </button>
+    //         );
+    //       }
+    //       if(loading){
+    //           return (
+    //               <div>
+    //                   <button>
+    //                         ...Loading...
+    //                     </button>
+    //               </div>
+    //           )
+    //       }
+    //     if(account == OwnersAddress && !started ) {
                 
 
-                return (
-                    // <button onClick={startApplication}>
-                    //     START APPLICATION
-                    // </button>
-                    <div>
-                        Application has a 2 hour interval pls wait 
-                    </div>
-                )
-        }
-        if(alredyAMemberOfDAO && !started){
-            return (
-                <h3>
-                    Application Process Has Not Started pls Wait (2hrs Interval).
-                </h3>
-            )
-        }
-         if (!alredyAMemberOfDAO && !started) {
-            return(
-                <div>
-                <p>
-                    Go to home to join Membership to be able to view this section.
-                </p>
-                <button onClick={goback}
-                >
-                    HOME
-                </button>
-                </div>
-            )
-        }
+    //             return (
+    //                 // <button onClick={startApplication}>
+    //                 //     START APPLICATION
+    //                 // </button>
+    //                 <div>
+    //                     Application has a 2 hour interval pls wait 
+    //                 </div>
+    //             )
+    //     }
+    //     if(alredyAMemberOfDAO && !started){
+    //         return (
+    //             <h3>
+    //                 Application Process Has Not Started pls Wait (2hrs Interval).
+    //             </h3>
+    //         )
+    //     }
+    //      if (!alredyAMemberOfDAO && !started) {
+    //         return(
+    //             <div>
+    //             <p>
+    //                 Go to home to join Membership to be able to view this section.
+    //             </p>
+    //             <button onClick={goback}
+    //             >
+    //                 HOME
+    //             </button>
+    //             </div>
+    //         )
+    //     }
         
-        if( started && !ended ) {
+    //     if( started && !ended ) {
 
-            if (account == OwnersAddress) {
-                return (
-                    <div>
-                        <h3>
-                            LIST OF CANDIDATES
-                        </h3>
-                        {
-                            members.map((lists,i) => {
+    //         if (account == OwnersAddress) {
+    //             return (
+    //                 <div>
+    //                     <h3>
+    //                         LIST OF CANDIDATES
+    //                     </h3>
+    //                     {
+    //                         members.map((lists,i) => {
                                
     
-                                return(
-                                    !lists.Id == 0 && 
-                                    <div>
+    //                             return(
+    //                                 !lists.Id == 0 && 
+    //                                 <div>
                                         
-                                    <div key={i}>
-                                        <p>
-                                            {lists.Id}
-                                        </p>
-                                        <p>
-                                            {lists.slogan}
-                                        </p>
+    //                                 <div key={i}>
+    //                                     <p>
+    //                                         {lists.Id}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.slogan}
+    //                                     </p>
                     
-                                        <p>
-                                            {name}
-                                        </p>
-                                        <p>
-                                            {lists.Address}
-                                        </p>
-                                    </div>
-                                    </div>
-                                )
-                                })
-                        }
-                    </div>
-                )
+    //                                     <p>
+    //                                         {name}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.Address}
+    //                                     </p>
+    //                                 </div>
+    //                                 </div>
+    //                             )
+    //                             })
+    //                     }
+    //                 </div>
+    //             )
                 
 
-            }
-            else if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-                return(
-                    <div>
-                    <p>
-                        Go to home to join Membership to be able to view this section.
-                    </p>
-                    <button onClick={goback}
-                    >
-                        HOME
-                    </button>
-                    </div>
-                )
-            }
-            else if(alredyAMemberOfDAO && !alreadyACandidate){
-                return(
-                    <div>
-                        <div>
-                            <p> 
-                                NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
-                            </p>
-                        </div>
-                        <div>
-                            <input
-                            placeholder='slogan'
-                            type="text"
-                            onChange={e => setSlogan(e.target.value)} />
-                            <button
-                            onClick={jointhecandidateList}
-                            >
-                            <p>Apply</p> 
-                            </button>
-                        </div>
-                    </div>
-                )
-            }
-            else  {
-                return (
-                    <div>
-                         <h3>
-                            LIST OF CANDIDATES
-                        </h3>
-                        {
-                            members.map((lists,i) => {
+    //         }
+    //         else if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+    //             return(
+    //                 <div>
+    //                 <p>
+    //                     Go to home to join Membership to be able to view this section.
+    //                 </p>
+    //                 <button onClick={goback}
+    //                 >
+    //                     HOME
+    //                 </button>
+    //                 </div>
+    //             )
+    //         }
+    //         else if(alredyAMemberOfDAO && !alreadyACandidate){
+    //             return(
+    //                 <div>
+    //                     <div>
+    //                         <p> 
+    //                             NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
+    //                         </p>
+    //                     </div>
+    //                     <div>
+    //                         <input
+    //                         placeholder='slogan'
+    //                         type="text"
+    //                         onChange={e => setSlogan(e.target.value)} />
+    //                         <button
+    //                         onClick={jointhecandidateList}
+    //                         >
+    //                         <p>Apply</p> 
+    //                         </button>
+    //                     </div>
+    //                 </div>
+    //             )
+    //         }
+    //         else  {
+    //             return (
+    //                 <div>
+    //                      <h3>
+    //                         LIST OF CANDIDATES
+    //                     </h3>
+    //                     {
+    //                         members.map((lists,i) => {
     
-                                return(
-                                    !lists.Id == 0 && 
-                                    <div>
+    //                             return(
+    //                                 !lists.Id == 0 && 
+    //                                 <div>
                                        
-                                    <div key={i}>
-                                        <p>
-                                            {lists.Id}
-                                        </p>
-                                        <p>
-                                            {lists.slogan}
-                                        </p>
+    //                                 <div key={i}>
+    //                                     <p>
+    //                                         {lists.Id}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.slogan}
+    //                                     </p>
                     
-                                        <p>
-                                            {name}
-                                        </p>
-                                        <p>
-                                            {lists.Address}
-                                        </p>
-                                    </div>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )
-            }
-        }
-        if(started && ended && !finished) { 
-            if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-                return(
-                    <div>
-                    <p>
-                        Go to home to join Membership to be able to view this section.
-                    </p>
-                    <button onClick={goback}
-                    >
-                        HOME
-                    </button>
-                    </div>
-                )
-            }
+    //                                     <p>
+    //                                         {name}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.Address}
+    //                                     </p>
+    //                                 </div>
+    //                                 </div>
+    //                             )
+    //                         })
+    //                     }
+    //                 </div>
+    //             )
+    //         }
+    //     }
+    //     if(started && ended && !finished) { 
+    //         if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+    //             return(
+    //                 <div>
+    //                 <p>
+    //                     Go to home to join Membership to be able to view this section.
+    //                 </p>
+    //                 <button onClick={goback}
+    //                 >
+    //                     HOME
+    //                 </button>
+    //                 </div>
+    //             )
+    //         }
           
-           else if(alredyAMemberOfDAO && alreadyACandidate)     
-            {
-            return (
-                <div>
-                     <h3>PLS WAIT FOR RESULTS </h3>
-                    {
+    //        else if(alredyAMemberOfDAO && alreadyACandidate)     
+    //         {
+    //         return (
+    //             <div>
+    //                  <h3>PLS WAIT FOR RESULTS </h3>
+    //                 {
                         
-                        members.map((lists,i) => {
+    //                     members.map((lists,i) => {
     
-                            return(
-                                !lists.Id == 0 && 
-                                <div>
+    //                         return(
+    //                             !lists.Id == 0 && 
+    //                             <div>
                                    
-                                <div key={i}>
-                                    <p>
-                                        {lists.Id}
-                                    </p>
-                                    <p>
-                                        {lists.slogan}
-                                    </p>
+    //                             <div key={i}>
+    //                                 <p>
+    //                                     {lists.Id}
+    //                                 </p>
+    //                                 <p>
+    //                                     {lists.slogan}
+    //                                 </p>
                 
-                                    <p>
-                                        {name}
-                                    </p>
-                                    <p>
-                                        {lists.Address}
-                                    </p>
-                                </div>
-                                </div>
-                            )
-                        })
-                    }
+    //                                 <p>
+    //                                     {name}
+    //                                 </p>
+    //                                 <p>
+    //                                     {lists.Address}
+    //                                 </p>
+    //                             </div>
+    //                             </div>
+    //                         )
+    //                     })
+    //                 }
+    //             </div>
+    //         )
+            
+    //         }
+    //         else {
+    //             return (
+    //                 <div>
+    //                     {/* <button onClick={GetRandomNumber}>
+    //                         Get random person
+    //                     </button> */}
+    //                      <h3>PLS WAIT FOR RESULTS </h3>
+    //                     {
+                                    
+    //                         members.map((lists,i) => {
+                    
+    //                             return(
+                                    
+    //                                 !lists.Id == 0 && 
+    //                                 <div key={i}>
+    //                                     <p>
+    //                                         {lists.Id}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.slogan}
+    //                                     </p>
+                    
+    //                                     <p>
+    //                                         {name}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.Address}
+    //                                     </p>
+    //                                 </div>
+    //                             )
+    //                         })
+    //                     }
+    //                 </div>
+    //             )
+    //         }
+    //     }
+    //     if(ended && finished) { 
+    //         if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
+    //             return(
+    //                 <div>
+    //                 <p>
+    //                     Go to home to join Membership to be able to view this section.
+    //                 </p>
+    //                 <button onClick={goback}
+    //                 >
+    //                     HOME
+    //                 </button>
+    //                 </div>
+    //             )
+    //         }
+          
+    //        else if(alredyAMemberOfDAO && alreadyACandidate)     
+    //         {
+    //         return (
+    //             <div>
+    //                  <h3> The winner is {rand} You only have 5 minutes to check this</h3>
+    //                 {
+                        
+    //                     members.map((lists,i) => {
+    
+    //                         return(
+    //                             !lists.Id == 0 && 
+    //                             <div>
+                                   
+    //                             <div key={i}>
+    //                                 <p>
+    //                                     {lists.Id}
+    //                                 </p>
+    //                                 <p>
+    //                                     {lists.slogan}
+    //                                 </p>
+                
+    //                                 <p>
+    //                                     {name}
+    //                                 </p>
+    //                                 <p>
+    //                                     {lists.Address}
+    //                                 </p>
+    //                             </div>
+    //                             </div>
+    //                         )
+    //                     })
+    //                 }
+    //             </div>
+    //         )
+            
+    //         }
+    //         else {
+    //             return (
+    //                 <div>
+    //                       <h3> The winner is {rand} You only have 5 minutes to check this </h3>
+    //                     {
+                                    
+    //                         members.map((lists,i) => {
+                    
+    //                             return(
+                                    
+    //                                 !lists.Id == 0 && 
+    //                                 <div key={i}>
+    //                                     <p>
+    //                                         {lists.Id}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.slogan}
+    //                                     </p>
+                    
+    //                                     <p>
+    //                                         {name}
+    //                                     </p>
+    //                                     <p>
+    //                                         {lists.Address}
+    //                                     </p>
+    //                                 </div>
+    //                             )
+    //                         })
+    //                     }
+    //                 </div>
+    //             )
+    //         }
+    //     }
+    // }
+    const renderButton = () =>
+     { if (!walletConnected) {
+                return (
+                  <button onClick={connectWallet} className={styles.button}>
+                    Connect your wallet
+                  </button>
+                );
+              }
+        if(loading){
+                return (
+                      <div>
+                          <button>
+                                ...Loading...
+                            </button>
+                      </div>
+                  )
+        }
+        if (!alredyAMemberOfDAO ) {
+                    return(
+                        <div>
+                        <p>
+                            Go to home to join Membership to be able to view this section.
+                        </p>
+                        <button onClick={goback}
+                        >
+                            HOME
+                        </button>
+                        </div>
+                    )
+        }
+        if(alredyAMemberOfDAO && !alreadyACandidate){
+            return(
+                <div>
+                    <div>
+                        <p> 
+                            NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
+                        </p>
+                    </div>
+                    <div>
+                        <input
+                        placeholder='slogan'
+                        type="text"
+                        onChange={e => setSlogan(e.target.value)} />
+                        <button
+                        onClick={jointhecandidateList}
+                        >
+                        <p>Apply</p> 
+                        </button>
+                    </div>
                 </div>
             )
-            
-            }
-            else {
-                return (
-                    <div>
-                        {/* <button onClick={GetRandomNumber}>
-                            Get random person
-                        </button> */}
-                         <h3>PLS WAIT FOR RESULTS </h3>
-                        {
-                                    
-                            members.map((lists,i) => {
-                    
-                                return(
-                                    
-                                    !lists.Id == 0 && 
-                                    <div key={i}>
-                                        <p>
-                                            {lists.Id}
-                                        </p>
-                                        <p>
-                                            {lists.slogan}
-                                        </p>
-                    
-                                        <p>
-                                            {name}
-                                        </p>
-                                        <p>
-                                            {lists.Address}
-                                        </p>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )
-            }
         }
-        if(ended && finished) { 
-            if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-                return(
-                    <div>
-                    <p>
-                        Go to home to join Membership to be able to view this section.
-                    </p>
-                    <button onClick={goback}
-                    >
-                        HOME
-                    </button>
-                    </div>
-                )
-            }
-          
-           else if(alredyAMemberOfDAO && alreadyACandidate)     
-            {
-            return (
-                <div>
-                     <h3> The winner is {rand} You only have 5 minutes to check this</h3>
-                    {
-                        
-                        members.map((lists,i) => {
-    
-                            return(
-                                !lists.Id == 0 && 
-                                <div>
-                                   
-                                <div key={i}>
-                                    <p>
-                                        {lists.Id}
-                                    </p>
-                                    <p>
-                                        {lists.slogan}
-                                    </p>
-                
-                                    <p>
-                                        {name}
-                                    </p>
-                                    <p>
-                                        {lists.Address}
-                                    </p>
-                                </div>
-                                </div>
-                            )
-                        })
-                    }
-                </div>
-            )
-            
-            }
-            else {
-                return (
-                    <div>
-                          <h3> The winner is {rand} You only have 5 minutes to check this </h3>
-                        {
-                                    
-                            members.map((lists,i) => {
-                    
-                                return(
-                                    
-                                    !lists.Id == 0 && 
-                                    <div key={i}>
-                                        <p>
-                                            {lists.Id}
-                                        </p>
-                                        <p>
-                                            {lists.slogan}
-                                        </p>
-                    
-                                        <p>
-                                            {name}
-                                        </p>
-                                        <p>
-                                            {lists.Address}
-                                        </p>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                )
-            }
-        }
-    }
 
+        
+     }
     return (
 
         <div>
             <div>  
             {renderButton()}
+            <div>
+               <p>rand number {rand}</p> 
+            </div>
             </div>
         </div>
     )

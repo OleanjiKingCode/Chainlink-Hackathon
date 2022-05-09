@@ -13,29 +13,29 @@ async function main() {
   const addr =linktoken.address;
 
   const Voting = await hre.ethers.getContractFactory("VotingDappByOleanji");
-  const voting = await Voting.deploy(addr);
+  const voting = await Voting.deploy(addr,"3000","3680");
   await voting.deployed();
   console.log("vote deployed to:", voting.address);
-  const addr2 =voting.address;
+  // const addr2 =voting.address;
 
-  const VRF = await hre.ethers.getContractFactory("VRFv2Consumer");
-  const vrf = await VRF.deploy("3680",addr2);
-  await vrf.deployed();
-  const addr3 =vrf.address;
-  console.log("Vrf deployed to:", addr3);
+  // const VRF = await hre.ethers.getContractFactory("VRFv2Consumer");
+  // const vrf = await VRF.deploy("3680",addr2);
+  // await vrf.deployed();
+  // const addr3 =vrf.address;
+  // console.log("Vrf deployed to:", addr3);
 
 
-  const Keeper = await hre.ethers.getContractFactory("Counter");
-  const keepers = await Keeper.deploy("2130",addr2);
-  await keepers.deployed();
-  const addr4 =keepers.address;
-  console.log("Keepers deployed to:", addr4);
+  // const Keeper = await hre.ethers.getContractFactory("Counter");
+  // const keepers = await Keeper.deploy("3000",addr2);
+  // await keepers.deployed();
+  // const addr4 =keepers.address;
+  // console.log("Keepers deployed to:", addr4);
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
   export const VotingAddress ="${voting.address}"
-  export const VRFAddress ="${vrf.address}"
+  
   `)
 }
 
