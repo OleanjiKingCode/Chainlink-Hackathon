@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 import "hardhat/console.sol"; 
 import "@openzeppelin/contracts/utils/Counters.sol";
 
@@ -50,7 +49,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
     uint winnersTokens = 250 * 10 ** 18;
 
 
-    mapping(address => bool) public votedAlready;
+    
 
 
   VRFCoordinatorV2Interface COORDINATOR;
@@ -109,6 +108,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
         applicationStarted=true;
         applicationCalculating=false;
         lastTimeStamp = block.timestamp;
+        numofappliedCandidates = 0;
         
     }
    function CreditWinner(uint id) public  {
@@ -118,11 +118,19 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
        for (index= 0; index < currentNumber; index++) {
            if(id == Votersprofile[index + 1].votersId){
               winner = Votersprofile[id].candidateAddress;
+
               oleanjidaotoken._mintForWinners(winner, winnersTokens);
+               areYouACandidate[winner]=false;
            }
        }
    }
-
+    // function getWinner(uint id) public {
+    //     uint256 index = 0;
+    //    uint256 currentNumber = numofappliedCandidates.current();
+    //    for (index= 0; index < currentNumber; index++) {
+    //        if(id == Votersprofile[index + 1].votersId){
+    //           winner = Votersprofile[id].candidateAddress;
+    // }
 
      function getNumberOfCandidates () external view returns(uint) {
        return numofappliedCandidates.current();
@@ -177,7 +185,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
         bytes memory /* checkData */
         ) public
           view
-          override
+          
            returns (bool upkeepNeeded, bytes memory /* performData */) {
         bool isOpen = applicationStarted;
         bool itsTime = ((block.timestamp - lastTimeStamp) > interval);
@@ -186,12 +194,10 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
       
     }
 
-    function performUpkeep(bytes calldata /* performData */) external override{
+    function performUpkeep(bytes calldata /* performData */) external {
        (bool upkeepNeeded, ) = checkUpkeep("");
         if(!upkeepNeeded) {
             revert UpkeepNotNeeded();
-             
-        
         }
         s_requestId = COORDINATOR.requestRandomWords(
         keyHash,

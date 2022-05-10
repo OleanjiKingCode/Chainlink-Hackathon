@@ -28,6 +28,8 @@ export default function VotingPoll() {
     const[ended,setEnded]=useState(false)
     const[rand,setRand]= useState(0)
     const[finished, setFinished] = useState(false)
+    const[Winner,setWinner]= useState("")
+    const[status,setStatus]=useState(true)
     // const timeAnchor = 32;
 
 
@@ -76,7 +78,7 @@ export default function VotingPoll() {
         });
         connectWallet();
         console.log("sdcjnsdhj");
-       
+        fetchVotersList();
         // const __started = checkifStarted();
         // // const __ended = checkifEnded();
         // if(__started){
@@ -115,7 +117,12 @@ export default function VotingPoll() {
                 }
             },
              5* 1000);
-
+             const EndedInterval = setInterval(async function () {
+                await GetTheAddressOfWinner(); 
+                await checkSateOfProcess();
+                
+            },
+             5* 1000);
     }
         
 
@@ -225,7 +232,6 @@ export default function VotingPoll() {
 
             let List = {
                 Id : i.votersId.toNumber(),
-                
                 Address:i.candidateAddress,
                 slogan :i.Slogan
 
@@ -364,7 +370,31 @@ export default function VotingPoll() {
         
        
     }
+    const GetTheAddressOfWinner = async () => {
+        const provider = await getProviderOrSigner();
+        const contract = new Contract(VotingAddress,VOTE.abi,provider);
+        const winnerAddress  = await contract.winner();
+        setWinner(winnerAddress);
+    }
 
+    const checkSateOfProcess = async () =>{
+        try {
+            const provider = await getProviderOrSigner();
+            const contract = new Contract(VotingAddress,VOTE.abi,provider);
+            const Open  = await contract.applicationStarted();
+            const calc  = await contract.applicationCalculating();
+            if(Open && !calc){
+                setStatus(true);
+            }
+            else if(!open && calc){
+                setStatus(false); 
+            }
+
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
     const checIfAlreadyAMemberOfDAO = async() =>{
         try {
             const signer = await getProviderOrSigner(true);
@@ -754,7 +784,7 @@ export default function VotingPoll() {
                         </div>
                     )
         }
-        if(alredyAMemberOfDAO && !alreadyACandidate){
+        if(alredyAMemberOfDAO && !alreadyACandidate && status){
             return(
                 <div>
                     <div>
@@ -773,6 +803,76 @@ export default function VotingPoll() {
                         <p>Apply</p> 
                         </button>
                     </div>
+                    <br/>  <br/> <br/>  <br/>
+                    {
+    
+                        members.map((lists,i) => {
+    
+                            return(
+                                !lists.Id == 0 && 
+                                <div>
+                                    
+                                <div key={i}>
+                                    <p>
+                                        {lists.Id}
+                                    </p>
+                                    <p>
+                                        {lists.slogan}
+                                    </p>
+                
+                                    <p>
+                                        {name}
+                                    </p>
+                                    <p>
+                                        {lists.Address}
+                                    </p>
+                                </div>
+                                </div>
+                            )
+                        })
+                    }
+                     The Last Winner was : {Winner}
+                </div>
+            )
+        }
+        // else (alreadyACandidate && !status){
+            else{
+            return (
+                <div>
+                    <p>
+                        You can't enter again as the results is been collated
+                    </p>
+                    <br/>  <br/> <br/>  <br/>
+                    {
+    
+                        members.map((lists,i) => {
+    
+                            return(
+                                !lists.Id == 0 && 
+                                <div>
+                                    
+                                <div key={i}>
+                                    <p>
+                                        {lists.Id}
+                                    </p>
+                                    <p>
+                                        {lists.slogan}
+                                    </p>
+                
+                                    <p>
+                                        {name}
+                                    </p>
+                                    <p>
+                                        {lists.Address}
+                                    </p>
+                                </div>
+                                </div>
+                            )
+                        })
+                    }
+                    <h3>
+                    The Last Winner was : {Winner}
+                </h3>
                 </div>
             )
         }
@@ -785,7 +885,7 @@ export default function VotingPoll() {
             <div>  
             {renderButton()}
             <div>
-               <p>rand number {rand}</p> 
+             
             </div>
             </div>
         </div>
