@@ -803,7 +803,7 @@ export default function VotingPoll() {
                         <p>Apply</p> 
                         </button>
                     </div>
-                    <br/>  <br/> <br/>  <br/>
+                    <br/>  <br/>
                     {
     
                         members.map((lists,i) => {
@@ -842,7 +842,7 @@ export default function VotingPoll() {
                     <p>
                         You can't enter again as the results is been collated
                     </p>
-                    <br/>  <br/> <br/>  <br/>
+                    <br/>  <br/>
                     {
     
                         members.map((lists,i) => {

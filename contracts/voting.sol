@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 error UpkeepNotNeeded();
 
 
-contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Ownable {
+contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
      using Counters for Counters.Counter;
     // making instances of the token and its interface there may be another way but this is what i did 
     // without help :D
@@ -26,7 +26,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
     uint votingPrice= 150;
     Counters.Counter public numofappliedCandidates;
     
-
+   
     // uint8 public maxnumofAppliableCandidates = 20;
     // to check if a candidate or not
     mapping(address => bool) public areYouACandidate;
@@ -90,6 +90,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         s_owner = msg.sender;
         s_subscriptionId = subscriptionId;
+       
     
     }
     
@@ -108,7 +109,13 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
         applicationStarted=true;
         applicationCalculating=false;
         lastTimeStamp = block.timestamp;
-        numofappliedCandidates = 0;
+         uint256 index = 0;
+        uint256 currentNumber = numofappliedCandidates.current();
+        for (index= 0; index < currentNumber; index++) {
+           delete Votersprofile[index+1];
+       }
+        numofappliedCandidates.reset();
+        //  Votersprofile = new mapping(uint256 => Voters) ;
         
     }
    function CreditWinner(uint id) public  {
@@ -117,7 +124,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
        uint256 currentNumber = numofappliedCandidates.current();
        for (index= 0; index < currentNumber; index++) {
            if(id == Votersprofile[index + 1].votersId){
-              winner = Votersprofile[id].candidateAddress;
+               winner = Votersprofile[id].candidateAddress;
 
               oleanjidaotoken._mintForWinners(winner, winnersTokens);
                areYouACandidate[winner]=false;
@@ -195,17 +202,20 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,KeeperCompatibleInterface,Owna
     }
 
     function performUpkeep(bytes calldata /* performData */) external {
-       (bool upkeepNeeded, ) = checkUpkeep("");
-        if(!upkeepNeeded) {
-            revert UpkeepNotNeeded();
-        }
-        s_requestId = COORDINATOR.requestRandomWords(
+    //    (bool upkeepNeeded, ) = checkUpkeep("");
+    //     if(!upkeepNeeded) {
+    //         revert UpkeepNotNeeded();
+    //     }
+    if(applicationStarted && ((block.timestamp - lastTimeStamp) > interval) ) {
+         s_requestId = COORDINATOR.requestRandomWords(
         keyHash,
         s_subscriptionId,
         requestConfirmations,
         callbackGasLimit,
         numWords
         );
+    }
+       
        
        
     }
