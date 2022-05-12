@@ -13,7 +13,7 @@ async function main() {
   const addr =linktoken.address;
 
   const Voting = await hre.ethers.getContractFactory("VotingDappByOleanji");
-  const voting = await Voting.deploy(addr,"600","4139");
+  const voting = await Voting.deploy(addr,"900","4139");
   await voting.deployed();
   console.log("vote deployed to:", voting.address);
 
