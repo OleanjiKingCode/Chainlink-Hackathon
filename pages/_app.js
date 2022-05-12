@@ -134,9 +134,9 @@ function MyApp({ Component, pageProps }) {
                 Lottery
               </div>
             </Link>
-            <Link href="/meet-up">
+            <Link href="/chat-room">
               <div className=' d-flex justify-content-center p-4 mx-10'>
-                Meet Up
+                Chat Room
               </div>
             </Link>
             <Link href="/news">

@@ -196,17 +196,18 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
            returns (bool upkeepNeeded, bytes memory /* performData */) {
         bool isOpen = applicationStarted;
         bool itsTime = ((block.timestamp - lastTimeStamp) > interval);
-        upkeepNeeded = (isOpen && itsTime);
+        bool enoughPeople = ( numofappliedCandidates.current() >= 1);
+        upkeepNeeded = (isOpen && itsTime && enoughPeople);
         return (upkeepNeeded, "0x0");
       
     }
 
     function performUpkeep(bytes calldata /* performData */) external {
-    //    (bool upkeepNeeded, ) = checkUpkeep("");
-    //     if(!upkeepNeeded) {
-    //         revert UpkeepNotNeeded();
-    //     }
-    if(applicationStarted && ((block.timestamp - lastTimeStamp) > interval) ) {
+       (bool upkeepNeeded, ) = checkUpkeep("");
+        if(!upkeepNeeded) {
+            revert UpkeepNotNeeded();
+        }
+   
          s_requestId = COORDINATOR.requestRandomWords(
         keyHash,
         s_subscriptionId,
@@ -214,7 +215,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         callbackGasLimit,
         numWords
         );
-    }
+    
        
        
        

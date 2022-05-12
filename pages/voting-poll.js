@@ -836,7 +836,7 @@ export default function VotingPoll() {
             )
         }
         // else (alreadyACandidate && !status){
-            else{
+            if(alredyAMemberOfDAO && alreadyACandidate && status){
             return (
                 <div>
                     <p>
