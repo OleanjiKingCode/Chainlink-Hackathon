@@ -876,6 +876,46 @@ export default function VotingPoll() {
                 </div>
             )
         }
+        if (alredyAMemberOfDAO && !alreadyACandidate && !status){
+            return (
+                <div>
+                    <p>
+                        You can't enter again as the results is been collated and you missed the cuurent one.
+                    </p>
+                    <br/>  <br/>
+
+                    <h3> People who didnt miss it are :</h3>
+                    {
+    
+                        members.map((lists,i) => {
+
+                            return(
+                                !lists.Id == 0 && 
+                                <div>
+                                    
+                                <div key={i}>
+                                    <p>
+                                        {lists.Id}
+                                    </p>
+                                    <p>
+                                        {lists.slogan}
+                                    </p>
+
+                                    <p>
+                                        {name}
+                                    </p>
+                                    <p>
+                                        {lists.Address}
+                                    </p>
+                                </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            )
+
+        }
 
         
      }

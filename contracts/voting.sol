@@ -27,7 +27,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     Counters.Counter public numofappliedCandidates;
     
    
-    // uint8 public maxnumofAppliableCandidates = 20;
+   
     // to check if a candidate or not
     mapping(address => bool) public areYouACandidate;
 
@@ -43,8 +43,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
 
     bool public applicationStarted=true;
      bool public applicationCalculating=false;
-    // uint public applicationEnded;
-    // bool public getRandNum = false;
+   
 
     uint winnersTokens = 250 * 10 ** 18;
 
@@ -90,34 +89,26 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         s_owner = msg.sender;
         s_subscriptionId = subscriptionId;
-       
-    
     }
-    
-    // function startApplication() public onlyOwner {
-    //     applicationStarted = true;
-    //     applicationEnded = block.timestamp + 7 minutes;
-        
-    // }
-    //  function SetRandomNum() public {
-    //      require(block.timestamp > applicationEnded, "NOT YET TIME FOR GETTING THE RAND NUM");
-    //    getRandNum = true;
-        
-    // }
 
+
+    
     function ResetApplication() public {
         applicationStarted=true;
         applicationCalculating=false;
         lastTimeStamp = block.timestamp;
-         uint256 index = 0;
+        // winner = address(0);
+        uint256 index = 0;
         uint256 currentNumber = numofappliedCandidates.current();
         for (index= 0; index < currentNumber; index++) {
            delete Votersprofile[index+1];
-       }
+        }
         numofappliedCandidates.reset();
-        //  Votersprofile = new mapping(uint256 => Voters) ;
+       
         
     }
+
+
    function CreditWinner(uint id) public  {
        require(!applicationStarted && applicationCalculating, "The application has not even started");
        uint256 index = 0;
@@ -131,21 +122,18 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
            }
        }
    }
-    // function getWinner(uint id) public {
-    //     uint256 index = 0;
-    //    uint256 currentNumber = numofappliedCandidates.current();
-    //    for (index= 0; index < currentNumber; index++) {
-    //        if(id == Votersprofile[index + 1].votersId){
-    //           winner = Votersprofile[id].candidateAddress;
-    // }
+ 
 
      function getNumberOfCandidates () external view returns(uint) {
        return numofappliedCandidates.current();
     }
+
+
     //to get the voting price
     function getVotingPrice() public view returns(uint){
         return votingPrice;
     }
+
 
      function IsACandidate(address sender) external view returns(bool){
        bool isACandidate = areYouACandidate[sender];
@@ -188,50 +176,51 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         return list;
     }
   
+
+
     function checkUpkeep(
         bytes memory /* checkData */
-        ) public
-          view
-          
-           returns (bool upkeepNeeded, bytes memory /* performData */) {
+        )public
+         view  
+        returns (bool upkeepNeeded, bytes memory /* performData */) {
+
         bool isOpen = applicationStarted;
         bool itsTime = ((block.timestamp - lastTimeStamp) > interval);
-        bool enoughPeople = ( numofappliedCandidates.current() >= 1);
+        bool enoughPeople = (numofappliedCandidates.current() >= 1);
         upkeepNeeded = (isOpen && itsTime && enoughPeople);
         return (upkeepNeeded, "0x0");
       
     }
 
+
+
     function performUpkeep(bytes calldata /* performData */) external {
+
        (bool upkeepNeeded, ) = checkUpkeep("");
         if(!upkeepNeeded) {
             revert UpkeepNotNeeded();
         }
-   
-         s_requestId = COORDINATOR.requestRandomWords(
+        s_requestId = COORDINATOR.requestRandomWords(
         keyHash,
         s_subscriptionId,
         requestConfirmations,
         callbackGasLimit,
         numWords
         );
-    
-       
-       
-       
     }
+
 
     function fulfillRandomWords(
     uint256, /* requestId */
-    uint256[] memory randomWords
-  ) internal override {
+    uint256[] memory randomWords)
+     internal override {
+
     uint256 currentNumber = numofappliedCandidates.current();
     s_randomLuck = (randomWords[0] % currentNumber) + 1;
     applicationStarted = false;
     applicationCalculating =true;
     CreditWinner(s_randomLuck);
     ResetApplication();
-
   }
 
    
