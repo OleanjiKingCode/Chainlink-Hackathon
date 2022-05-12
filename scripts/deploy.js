@@ -10,15 +10,12 @@ async function main() {
   await linktoken.deployed();
 
   console.log("LinkToken deployed to:", linktoken.address);
-  const addr =linktoken.address;
+  const LinkCA =linktoken.address;
 
   const Voting = await hre.ethers.getContractFactory("VotingDappByOleanji");
-  const voting = await Voting.deploy(addr,"900","4254");
+  const voting = await Voting.deploy(LinkCA,"900","4254");
   await voting.deployed();
   console.log("vote deployed to:", voting.address);
-
-
-
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
