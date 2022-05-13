@@ -17,10 +17,17 @@ async function main() {
   await voting.deployed();
   console.log("vote deployed to:", voting.address);
 
+  const Chat = await hre.ethers.getContractFactory("chatting");
+  const chatting = await Chat.deploy(LinkCA);
+  await chatting.deployed();
+  console.log("The chatting Contract is:", chatting.address);
+  
+
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
   export const VotingAddress ="${voting.address}"
+  export const ChattingAddress ="${chatting.address}"
   
   `)
 }
