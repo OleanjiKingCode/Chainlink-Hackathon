@@ -3,13 +3,13 @@ import styles from '../styles/Home.module.css'
 import Web3Modal from "web3modal";
 import { ethers,providers, Contract } from "ethers";
 import { useEffect, useRef, useState, useContext } from "react";
-import { LinkTokenAddress, OwnersAddress,VotingAddress ,VRFAddress} from "../constant"
+import { LinkTokenAddress, OwnersAddress,VotingAddress} from "../constant"
 import { OwnersAccount } from '../context';
 import { useRouter } from "next/router"
 
 import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkToken.json'
 import VOTE from '../artifacts/contracts/voting.sol/VotingDappByOleanji.json'
-// import VRF from '../artifacts/contracts/LinkVRF.sol/VRFv2Consumer.json'
+
 
 
 export default function VotingPoll() {
@@ -17,20 +17,17 @@ export default function VotingPoll() {
     const[alreadyACandidate ,setAlredyACandidate] = useState(false)
     const[alredyAMemberOfDAO , setAlredyAMemberOfDAO] = useState(false)
     const account = useContext(OwnersAccount)
-    const[name,setName] =useState("")
+    // const[name,setName] =useState("")
     const[slogan, setSlogan] = useState("")
     const[address,setAddress] =useState("")
     const [walletConnected, setWalletConnected] = useState(false);
     const web3ModalRef = useRef();
     const[members,setMembers] =useState([])
     const router = useRouter()
-    const [started,setStarted] = useState(false)
-    const[ended,setEnded]=useState(false)
     const[rand,setRand]= useState(0)
-    const[finished, setFinished] = useState(false)
     const[Winner,setWinner]= useState("")
     const[status,setStatus]=useState(true)
-    // const timeAnchor = 32;
+
 
 
     const getProviderOrSigner = async (needSigner = false) => {
@@ -49,6 +46,7 @@ export default function VotingPoll() {
         }
         return web3Provider;
     };
+
     
       /*
         connectWallet: Connects the MetaMask wallet
@@ -66,11 +64,11 @@ export default function VotingPoll() {
         }
     };
     
+
     useEffect(() => {
-    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
+  
     if (!walletConnected) {
-        // Assign the Web3Modal class to the reference object by setting it's `current` value
-        // The `current` value is persisted throughout as long as this page is open
+        
         web3ModalRef.current = new Web3Modal({
         network: "rinkeby",
         providerOptions: {},
@@ -79,36 +77,6 @@ export default function VotingPoll() {
         connectWallet();
         console.log("sdcjnsdhj");
         fetchVotersList();
-        // const __started = checkifStarted();
-        // // const __ended = checkifEnded();
-        // if(__started){
-        //     whats running
-        //    fetchVotersList()
-        //     checkifEnded();
-        //     checkIfFinished();
-        // }
-
-        
-        // const EndedInterval = setInterval(async function () {
-        //     const _Started = await checkifStarted();
-        //     if (_Started) {
-        //         console.log("ncjin")
-        //       const _Ended = await checkifEnded();
-        //       if (_Ended) {
-        //         const _get = CheckIfSetRandNum();
-        //         if (_get) {
-        //         await GetRandomNumber();
-        //         const _finished = await checkIfFinished();
-        //         await fetchVotersList();
-        //         if(_finished) {
-        //             await fetchVotersList();
-        //             await CreditWinnerAndFinalise();
-        //            
-        //         }
-        //     }
-        //       }
-        //     }
-        //   }, 5 * 1000);
 
         const EndedInterval2 = setInterval(async function () {
                 await CheckIfSetRandNum(); 
@@ -117,6 +85,7 @@ export default function VotingPoll() {
                 }
             },
              5* 1000);
+
              const EndedInterval = setInterval(async function () {
                 await GetTheAddressOfWinner(); 
                 await checkSateOfProcess();
@@ -153,10 +122,10 @@ export default function VotingPoll() {
         setLoading(false)
         await fetchVotersList();
         console.log("slogan")
-        let name = await Tokencontract.getInfo();
+        // let name = await Tokencontract.getInfo();
         console.log("slogan")
         setAlredyACandidate(true);
-        setName(name);
+        // setName(name);
         
         
     } catch (error) {
@@ -165,62 +134,7 @@ export default function VotingPoll() {
     
     }
 
-    // const startApplication = async () =>{
-    //     try {
-    //         const signer = await getProviderOrSigner(true);
-    //         const contract = new Contract(VotingAddress,VOTE.abi,signer);
-    //         const start = await contract.startApplication()
-    //         setLoading(true)
-    //         await start.wait()
-    //         setLoading(false)
-    //        await checkifStarted();
-    //     } catch (e) {
-    //         console.log(e)
-    //     }
-       
-    // }
-
-    // const checkifStarted = async ()=>{
-    //     try {
-         
-    //         const provider = await getProviderOrSigner();
-           
-    //         const votingContract = new Contract(VotingAddress,VOTE.abi,provider);
-           
-    //         const hasStarted = await votingContract.applicationStarted();
-    //         setStarted(hasStarted)
-    //         console.log(hasStarted)
-    //         return hasStarted;
-           
-    //     } catch (error) {
-    //         console.log(error)
-    //         return false
-    //     }
-    // }
-    // const checkifEnded = async ()=>{
-    //     try {
-    //         const provider = await getProviderOrSigner();
-    //         const signer = await getProviderOrSigner(true);
-    //         const Votecontract = new Contract(VotingAddress,VOTE.abi,signer);
-    //         const contract = new Contract(VotingAddress,VOTE.abi,provider);
-    //         const ended = await contract.applicationEnded();
-
-    //         const hasended = ended.lt(Math.floor(Date.now() / 1000));
-            
-    //         if(hasended){
-    //             setEnded(true);
-    //             const setRandnum = await Votecontract.SetRandomNum();
-    //             await setRandnum.wait()
-    //         }else {
-    //             setEnded(false)
-    //         }
-            
-    //         return hasended;
-    //     } catch (error) {
-    //         console.log(error)
-    //         return false
-    //     }
-    // }
+ 
     const fetchVotersList = async () =>{
         try {
             
@@ -233,15 +147,15 @@ export default function VotingPoll() {
             let List = {
                 Id : i.votersId.toNumber(),
                 Address:i.candidateAddress,
-                slogan :i.Slogan
-
+                slogan :i.Slogan,
+                name:i.name
             }
             
             return List
         }))
-        const Tokencontract = new Contract(LinkTokenAddress,LINK.abi,signer);
-        const _name = await Tokencontract.getInfo();
-        setName(_name);
+        // const Tokencontract = new Contract(LinkTokenAddress,LINK.abi,signer);
+        // const _name = await Tokencontract.getInfo();
+        // setName(_name);
       
         setMembers(list);
        
@@ -419,341 +333,7 @@ export default function VotingPoll() {
         router.push('/')
            
     }
-    // const renderButton = () =>
-    // {
-       
-    //     if (!walletConnected) {
-    //         return (
-    //           <button onClick={connectWallet} className={styles.button}>
-    //             Connect your wallet
-    //           </button>
-    //         );
-    //       }
-    //       if(loading){
-    //           return (
-    //               <div>
-    //                   <button>
-    //                         ...Loading...
-    //                     </button>
-    //               </div>
-    //           )
-    //       }
-    //     if(account == OwnersAddress && !started ) {
-                
-
-    //             return (
-    //                 // <button onClick={startApplication}>
-    //                 //     START APPLICATION
-    //                 // </button>
-    //                 <div>
-    //                     Application has a 2 hour interval pls wait 
-    //                 </div>
-    //             )
-    //     }
-    //     if(alredyAMemberOfDAO && !started){
-    //         return (
-    //             <h3>
-    //                 Application Process Has Not Started pls Wait (2hrs Interval).
-    //             </h3>
-    //         )
-    //     }
-    //      if (!alredyAMemberOfDAO && !started) {
-    //         return(
-    //             <div>
-    //             <p>
-    //                 Go to home to join Membership to be able to view this section.
-    //             </p>
-    //             <button onClick={goback}
-    //             >
-    //                 HOME
-    //             </button>
-    //             </div>
-    //         )
-    //     }
-        
-    //     if( started && !ended ) {
-
-    //         if (account == OwnersAddress) {
-    //             return (
-    //                 <div>
-    //                     <h3>
-    //                         LIST OF CANDIDATES
-    //                     </h3>
-    //                     {
-    //                         members.map((lists,i) => {
-                               
-    
-    //                             return(
-    //                                 !lists.Id == 0 && 
-    //                                 <div>
-                                        
-    //                                 <div key={i}>
-    //                                     <p>
-    //                                         {lists.Id}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.slogan}
-    //                                     </p>
-                    
-    //                                     <p>
-    //                                         {name}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.Address}
-    //                                     </p>
-    //                                 </div>
-    //                                 </div>
-    //                             )
-    //                             })
-    //                     }
-    //                 </div>
-    //             )
-                
-
-    //         }
-    //         else if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-    //             return(
-    //                 <div>
-    //                 <p>
-    //                     Go to home to join Membership to be able to view this section.
-    //                 </p>
-    //                 <button onClick={goback}
-    //                 >
-    //                     HOME
-    //                 </button>
-    //                 </div>
-    //             )
-    //         }
-    //         else if(alredyAMemberOfDAO && !alreadyACandidate){
-    //             return(
-    //                 <div>
-    //                     <div>
-    //                         <p> 
-    //                             NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
-    //                         </p>
-    //                     </div>
-    //                     <div>
-    //                         <input
-    //                         placeholder='slogan'
-    //                         type="text"
-    //                         onChange={e => setSlogan(e.target.value)} />
-    //                         <button
-    //                         onClick={jointhecandidateList}
-    //                         >
-    //                         <p>Apply</p> 
-    //                         </button>
-    //                     </div>
-    //                 </div>
-    //             )
-    //         }
-    //         else  {
-    //             return (
-    //                 <div>
-    //                      <h3>
-    //                         LIST OF CANDIDATES
-    //                     </h3>
-    //                     {
-    //                         members.map((lists,i) => {
-    
-    //                             return(
-    //                                 !lists.Id == 0 && 
-    //                                 <div>
-                                       
-    //                                 <div key={i}>
-    //                                     <p>
-    //                                         {lists.Id}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.slogan}
-    //                                     </p>
-                    
-    //                                     <p>
-    //                                         {name}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.Address}
-    //                                     </p>
-    //                                 </div>
-    //                                 </div>
-    //                             )
-    //                         })
-    //                     }
-    //                 </div>
-    //             )
-    //         }
-    //     }
-    //     if(started && ended && !finished) { 
-    //         if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-    //             return(
-    //                 <div>
-    //                 <p>
-    //                     Go to home to join Membership to be able to view this section.
-    //                 </p>
-    //                 <button onClick={goback}
-    //                 >
-    //                     HOME
-    //                 </button>
-    //                 </div>
-    //             )
-    //         }
-          
-    //        else if(alredyAMemberOfDAO && alreadyACandidate)     
-    //         {
-    //         return (
-    //             <div>
-    //                  <h3>PLS WAIT FOR RESULTS </h3>
-    //                 {
-                        
-    //                     members.map((lists,i) => {
-    
-    //                         return(
-    //                             !lists.Id == 0 && 
-    //                             <div>
-                                   
-    //                             <div key={i}>
-    //                                 <p>
-    //                                     {lists.Id}
-    //                                 </p>
-    //                                 <p>
-    //                                     {lists.slogan}
-    //                                 </p>
-                
-    //                                 <p>
-    //                                     {name}
-    //                                 </p>
-    //                                 <p>
-    //                                     {lists.Address}
-    //                                 </p>
-    //                             </div>
-    //                             </div>
-    //                         )
-    //                     })
-    //                 }
-    //             </div>
-    //         )
-            
-    //         }
-    //         else {
-    //             return (
-    //                 <div>
-    //                     {/* <button onClick={GetRandomNumber}>
-    //                         Get random person
-    //                     </button> */}
-    //                      <h3>PLS WAIT FOR RESULTS </h3>
-    //                     {
-                                    
-    //                         members.map((lists,i) => {
-                    
-    //                             return(
-                                    
-    //                                 !lists.Id == 0 && 
-    //                                 <div key={i}>
-    //                                     <p>
-    //                                         {lists.Id}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.slogan}
-    //                                     </p>
-                    
-    //                                     <p>
-    //                                         {name}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.Address}
-    //                                     </p>
-    //                                 </div>
-    //                             )
-    //                         })
-    //                     }
-    //                 </div>
-    //             )
-    //         }
-    //     }
-    //     if(ended && finished) { 
-    //         if(!(account == OwnersAddress) && !alredyAMemberOfDAO){
-    //             return(
-    //                 <div>
-    //                 <p>
-    //                     Go to home to join Membership to be able to view this section.
-    //                 </p>
-    //                 <button onClick={goback}
-    //                 >
-    //                     HOME
-    //                 </button>
-    //                 </div>
-    //             )
-    //         }
-          
-    //        else if(alredyAMemberOfDAO && alreadyACandidate)     
-    //         {
-    //         return (
-    //             <div>
-    //                  <h3> The winner is {rand} You only have 5 minutes to check this</h3>
-    //                 {
-                        
-    //                     members.map((lists,i) => {
-    
-    //                         return(
-    //                             !lists.Id == 0 && 
-    //                             <div>
-                                   
-    //                             <div key={i}>
-    //                                 <p>
-    //                                     {lists.Id}
-    //                                 </p>
-    //                                 <p>
-    //                                     {lists.slogan}
-    //                                 </p>
-                
-    //                                 <p>
-    //                                     {name}
-    //                                 </p>
-    //                                 <p>
-    //                                     {lists.Address}
-    //                                 </p>
-    //                             </div>
-    //                             </div>
-    //                         )
-    //                     })
-    //                 }
-    //             </div>
-    //         )
-            
-    //         }
-    //         else {
-    //             return (
-    //                 <div>
-    //                       <h3> The winner is {rand} You only have 5 minutes to check this </h3>
-    //                     {
-                                    
-    //                         members.map((lists,i) => {
-                    
-    //                             return(
-                                    
-    //                                 !lists.Id == 0 && 
-    //                                 <div key={i}>
-    //                                     <p>
-    //                                         {lists.Id}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.slogan}
-    //                                     </p>
-                    
-    //                                     <p>
-    //                                         {name}
-    //                                     </p>
-    //                                     <p>
-    //                                         {lists.Address}
-    //                                     </p>
-    //                                 </div>
-    //                             )
-    //                         })
-    //                     }
-    //                 </div>
-    //             )
-    //         }
-    //     }
-    // }
+ 
     const renderButton = () =>
      { if (!walletConnected) {
                 return (
@@ -821,7 +401,7 @@ export default function VotingPoll() {
                                     </p>
                 
                                     <p>
-                                        {name}
+                                        {lists.name}
                                     </p>
                                     <p>
                                         {lists.Address}
@@ -860,7 +440,7 @@ export default function VotingPoll() {
                                     </p>
                 
                                     <p>
-                                        {name}
+                                    {lists.name}
                                     </p>
                                     <p>
                                         {lists.Address}
@@ -902,7 +482,7 @@ export default function VotingPoll() {
                                     </p>
 
                                     <p>
-                                        {name}
+                                    {lists.name}
                                     </p>
                                     <p>
                                         {lists.Address}

@@ -36,6 +36,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         uint votersId;
         address candidateAddress;
         string Slogan;
+        string name;
     }
 
     //mapping to get individual candidate or voters i mix up the english here
@@ -99,13 +100,18 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         lastTimeStamp = block.timestamp;
         // winner = address(0);
         uint256 index = 0;
-        uint256 currentNumber = numofappliedCandidates.current();
-        for (index= 0; index < currentNumber; index++) {
-           delete Votersprofile[index+1];
-        }
+         uint256 Number = numofappliedCandidates.current();
+        for (index= 0; index < Number; index++) { 
+
+            address memAddr = Votersprofile[index+1].candidateAddress;
+
+            areYouACandidate[memAddr]=false;
+
+             delete Votersprofile[index+1];
+           
+       }
         numofappliedCandidates.reset();
-       
-        
+
     }
 
 
@@ -150,10 +156,12 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     
         numofappliedCandidates.increment();
             uint256 current =  numofappliedCandidates.current();
+        string memory nameofCurrent =  oleanjidaotoken.getInfo();
         Votersprofile[current] =Voters(
             current,
             msg.sender,
-            _slogan
+            _slogan,
+            nameofCurrent
         );
         areYouACandidate[msg.sender]=true;
         linktoken.transferFrom(msg.sender, address(this) ,_amount);
