@@ -25,7 +25,7 @@ export default function Chatting () {
     const [owner , setOwner] = useState("")
     const[alredyAMemberOfDAO , setAlredyAMemberOfDAO] = useState(false)
     const router = useRouter()
-  
+    const[name,setName]= useState("")
     const web3ModalRef = useRef();
 
     useEffect(() => {
@@ -61,6 +61,13 @@ export default function Chatting () {
         // this is done here to set the owner address and this would show transactions done before on loading of the page.
         const Address = await signer.getAddress();
         setOwner(Address);
+        const Token = new Contract(
+          LinkTokenAddress,
+          LINK.abi,
+          signer
+        );
+        const Name = await Token.getInfo(Address)
+        setName(Name)
         return signer;
       }
       return web3Provider;
@@ -168,9 +175,8 @@ export default function Chatting () {
             Time : i.time,
             Message :i.message,
             Hash:i.hashText
-          
            }
-           console.log(transactionsList.Name)
+          
            return transactionsList
          }))
         
@@ -291,17 +297,25 @@ export default function Chatting () {
                           allTransactions.map((transaction , i ) => {
                         
                             return ( 
-                              <div key={i} style={{ padding:"10px 5px",  margin:"20px" ,backgroundColor:"blanchedalmond", borderRadius:"10px"}} > 
+                              <div key={i} style={{  padding:"10px 5px",  margin:"20px" ,backgroundColor:"blanchedalmond", borderRadius:"10px"}} > 
                                 <div  style={{padding:"0 5px" , display:"flex",justifyContent:"space-between"}}> 
-                                <div style={{color:"grey", opacity:"0.5"}}> 
+                                <div style={{color:"black"}}> 
                                 {
-                                    transaction.Name
+                                    transaction.Name == name ? (
+                                      <div style={{ fontWeight:"700", color:"purple"}}>
+                                      You
+                                      </div>
+                                    ):(
+                                      transaction.Name
+                                    )
                                 }
                                   </div>
                                 <div  style={{color:"black",fontWeight:"500" }}> 
                                 {
                                     transaction.Message
-                                  } </div>
+                                     
+                                } 
+                                  </div>
                                 
                                   
                                 </div>
@@ -380,26 +394,28 @@ export default function Chatting () {
                   return (
                     (transaction.Sender == owner || transaction.Receiver == owner) && 
 
-                     <tr key={i} className={styles.tr}>
+                     <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
                        <td className={styles.td}>
                          {serial++}
                        </td>
-                       <td className={styles.td}>
+                       <td className={styles.td} style={{fontSize:"10px"}}>
                          {transaction.Index}
                        </td>
                       
-                       <td className={styles.td}>
-                         {transaction.Time}
+                       <td className={styles.td} style={{fontSize:"10px"}}>
+                         {transaction.Time 
+                         }
                        </td>
                        
                        <td className={styles.td}>
-                        <button>
-                          <a href={`https://rinkeby.etherscan.io/tx/${transaction.Hash}`}  target="_blank" rel="noreferrer">
+                        <button style={{fontSize:"10px", textDecoration:"none",borderRadius:"10px" }}>
+                          <a href={`https://rinkeby.etherscan.io/tx/${transaction.Hash}`} 
+                           target="_blank" rel="noreferrer" style={{  textDecoration:"none" }}>
                             View in Explorer
                           </a>
                         </button>
                        </td>
-                       <td className={styles.td}>
+                       <td className={styles.td} style={{fontSize:"10px"}}>
                          {transaction.Message}
                        </td>
                      </tr> 

@@ -6,15 +6,17 @@ pragma solidity ^0.8.7;
 import "./IOleanjiDAOLinkToken.sol";
 
 
-
+ // This contract was forked/ used from one of my previous ones called DAOTOKEN
 contract chatting  {
 
     
     IOleanjiDAOLinkToken oleanjidaotoken;
 
-    uint256 public cost_Of_mesageInWei = cost_Of_mesage * 10 ** 18;
+   // the cost of sending a group message
     uint256 public cost_Of_mesage = 1 ether;
     address owner;
+
+     // All the info for one message/ transaction
     struct Transaction {
         uint256 transactId;
         address sender;
@@ -38,7 +40,9 @@ contract chatting  {
       
     }
 
-
+/*
+    This function is used to create the transaction, including the payment which is done in client.
+ */
 
     function CreateTransactionList (
         string memory _message,
@@ -65,6 +69,9 @@ contract chatting  {
     }
 
 
+/* 
+    To Fetch all the transactions done in the above.
+*/
 
     function FetchAllTransactions() public view returns (Transaction [] memory){
         Transaction [] memory transaction = new Transaction [] (numofTransaction);

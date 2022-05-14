@@ -13,8 +13,12 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 error UpkeepNotNeeded();
 
-
+/*this contract has a lot of name "Vote" even if it is not a voting contract i changed it from a voting contract 
+    to one dat ppl dont need to vote for a winner im using chainlink now
+*/
 contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
+
+    
      using Counters for Counters.Counter;
     // making instances of the token and its interface there may be another way but this is what i did 
     // without help :D
@@ -23,6 +27,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     ERC20 linktoken;
     IOleanjiDAOLinkToken oleanjidaotoken;
 
+// the amount of OLT tokens deducted from a person's account that is tryna vote
     uint votingPrice= 150;
     Counters.Counter public numofappliedCandidates;
     
@@ -50,7 +55,9 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
 
 
     
-
+/*
+        Information needed by Chainlink VRF to work
+*/
 
   VRFCoordinatorV2Interface COORDINATOR;
 
@@ -93,12 +100,14 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     }
 
 
+/*
+    This function is used to reset after the loop has finished like to start afresh
+*/
     
     function ResetApplication() public {
         applicationStarted=true;
         applicationCalculating=false;
         lastTimeStamp = block.timestamp;
-        // winner = address(0);
         uint256 index = 0;
          uint256 Number = numofappliedCandidates.current();
         for (index= 0; index < Number; index++) { 
@@ -114,7 +123,10 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
 
     }
 
-
+/*
+    This function is used to credit the winner that chainlink choses by using
+    the number gotten and get it address by going through all the profiles and using the mint function imported
+*/
    function CreditWinner(uint id) public  {
        require(!applicationStarted && applicationCalculating, "The application has not even started");
        uint256 index = 0;
@@ -129,6 +141,9 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
        }
    }
  
+ /*
+    This function is used to get the number of candidates that have applied to get new tokens
+  */
 
      function getNumberOfCandidates () external view returns(uint) {
        return numofappliedCandidates.current();
@@ -140,6 +155,9 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
         return votingPrice;
     }
 
+    /* 
+        This function is used to know if an address is a candidate or not.
+    */
 
      function IsACandidate(address sender) external view returns(bool){
        bool isACandidate = areYouACandidate[sender];
@@ -168,7 +186,9 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
 
     }
 
-
+/*
+    This is used to get the list of people who entered
+ */
     function fetchVotersList () public view returns(Voters[] memory) {
          uint256 current =  numofappliedCandidates.current();
         Voters[] memory list = new Voters[] (current);
@@ -185,7 +205,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     }
   
 
-
+    
     function checkUpkeep(
         bytes memory /* checkData */
         )public

@@ -1,7 +1,7 @@
 
-  export const LinkTokenAddress ="0x94d35F730DcB8A4A811569750BC18C6abdf2901A"
+  export const LinkTokenAddress ="0xf0cfb55268478fECE58Fd5471FF480Cf85125A64"
   export const OwnersAddress = "0xf2445f8FEEfef350ac1756F67C62938a37eDa375"
-  export const VotingAddress ="0x854B21D44298dc8174e61D834d137Eb9fb194e61"
-  export const ChattingAddress ="0xd8Aad7B1a9cd49257954751CBd59FC2b24cfA821"
+  export const VotingAddress ="0xd988B32272F61cc7c4e2f2BFc1b23bCc4DAa31C7"
+  export const ChattingAddress ="0x991e737104698F2e372d8ED7BFd49cDA8Fb37456"
   
   

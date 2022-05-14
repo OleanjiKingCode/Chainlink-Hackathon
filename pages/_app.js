@@ -7,7 +7,7 @@ import Link from "next/link"
 import 'bootstrap/dist/css/bootstrap.css'
 import { OwnersAccount } from '../context';
 import { useEffect, useRef, useState } from "react";
-import { LinkTokenAddress, OwnersAddress ,  abi } from '../constant';
+import { OwnersAddress } from '../constant';
 
 function MyApp({ Component, pageProps }) {
 
