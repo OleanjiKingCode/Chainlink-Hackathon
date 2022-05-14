@@ -156,7 +156,7 @@ contract VotingDappByOleanji is VRFConsumerBaseV2,Ownable {
     
         numofappliedCandidates.increment();
             uint256 current =  numofappliedCandidates.current();
-        string memory nameofCurrent =  oleanjidaotoken.getInfo();
+        string memory nameofCurrent =  oleanjidaotoken.getInfo(msg.sender);
         Votersprofile[current] =Voters(
             current,
             msg.sender,

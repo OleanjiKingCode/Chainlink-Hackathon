@@ -2,7 +2,27 @@
   padding: 0 2rem;
 }
 
+.table{
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
 
+
+}
+.td,.th{
+  border:1pz solid #dddddd;
+  text-align: left;
+  padding: 9px;
+  text-align: center;
+
+}
+.tr:nth-child(even){
+  background-color: #dddddd;
+}
+.table, .th, .td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
 .top{
   padding: 20px;
   background-color: palevioletred;

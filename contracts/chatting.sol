@@ -50,7 +50,7 @@ contract chatting  {
         bytes memory b1 = bytes(_time);
         require(b1.length != 0 , "it is empty");
         require(_hash != "", "it is empty");
-        string memory cuurentName = oleanjidaotoken.getInfo();
+        string memory cuurentName = oleanjidaotoken.getInfo(_sender);
         numofTransaction +=1;
         idTransaction[numofTransaction] = Transaction (
             numofTransaction,

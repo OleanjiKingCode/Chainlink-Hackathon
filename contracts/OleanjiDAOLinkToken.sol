@@ -89,11 +89,11 @@ contract OleanjiDAOLinkToken is ERC20("OleanjiLinkToken" , "OLT"), Ownable{
 
     // this is to reterive the name of a an address from the struct 
     // could have used a mapping buh lol
-        function getInfo() external view returns (string memory) {
+        function getInfo(address sender) external view returns (string memory) {
             uint index = 0;
             string memory _name;
             for (index = 0; index < numberOfMembers; index++) {
-                address sender = msg.sender;
+               
                 if(sender == memberCount[index + 1].memberAddress) {
                     uint currentId = memberCount[index + 1].memberId;
                     _name = memberCount[currentId].name;
