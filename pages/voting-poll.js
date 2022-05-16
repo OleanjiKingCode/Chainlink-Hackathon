@@ -27,7 +27,7 @@ export default function VotingPoll() {
     const[rand,setRand]= useState(0)
     const[Winner,setWinner]= useState("")
     const[status,setStatus]=useState(true)
-
+    const[serial, setSerial]= useState(1)
 
 
     const getProviderOrSigner = async (needSigner = false) => {
@@ -335,163 +335,295 @@ export default function VotingPoll() {
     }
  
     const renderButton = () =>
-     { if (!walletConnected) {
-                return (
-                  <button onClick={connectWallet} className={styles.button}>
-                    Connect your wallet
-                  </button>
-                );
-              }
-        if(loading){
-                return (
-                      <div>
-                          <button>
-                                ...Loading...
-                            </button>
-                      </div>
-                  )
-        }
-        if (!alredyAMemberOfDAO ) {
-                    return(
-                        <div>
-                        <p>
-                            Go to home to join Membership to be able to view this section.
-                        </p>
-                        <button onClick={goback}
-                        >
-                            HOME
-                        </button>
-                        </div>
-                    )
-        }
+     { 
+        if(!walletConnected) {
+            return (
+              <button onClick={connectWallet} style={{border:"none", textAlign:"center", 
+              padding:"10px 20px",color:"white",  fontSize:"16px", 
+              backgroundColor:"blue",marginTop:"20px", borderRadius:"10px"}}>
+                Connect Wallet
+              </button>
+            )
+          }
+          if(!alredyAMemberOfDAO ){
+              
+              return(
+                <div className='d-inline-block'>
+                <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
+                    This Page is unavailable to you because you are not a member.
+                    To register Go to home page 😥
+                </div>
+                <button onClick={goback} style={{border:"none", textAlign:"center", 
+                  padding:"10px 20px",color:"white",  fontSize:"16px", 
+                  backgroundColor:"blue",marginTop:"20px" , borderRadius:"10px"}}>
+                    Go Home
+                </button>
+                </div>
+            )
+              
+          }
         if(alredyAMemberOfDAO && !alreadyACandidate && status){
             return(
-                <div>
-                    <div>
-                        <p> 
-                            NOTE: YOU ARE SIGNING UP FOR THIS FOR 150 OLT ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
-                        </p>
+                <div style={{marginTop:"-200px"}}>
+                    <div style={{fontSize:"25px", fontWeight:"600"}}>
+                        
+                            NOTE: IF YOU ARE SIGNING UP FOR THIS ITS COST 250OLT 🤑 💰💰
+                            
+                       
                     </div>
+                    <br/> <br/>
+                    <div style={{fontSize:"16px", fontWeight:"400"}}> 
+                    ENTER YOUR SLOGAN TO BE CHOSEN IF WORTHY!!!!!!!
+                    </div>
+                    
                     <div>
                         <input
                         placeholder='slogan'
                         type="text"
-                        onChange={e => setSlogan(e.target.value)} />
-                        <button
-                        onClick={jointhecandidateList}
-                        >
-                        <p>Apply</p> 
-                        </button>
+                        onChange={e => setSlogan(e.target.value)}   style={{padding:"10px", border:"1px solid black" , borderRadius:"10px",width:"100%", fontSize:"14px"}}/>
+                            {
+                                loading ?
+                                (
+                                    <button  style={{ border:"none", textAlign:"center", 
+                                        padding:"10px 20px",color:"white", 
+                                        backgroundColor:"blue" , marginLeft:"10px" , borderRadius:"10px"}}>
+                                        ...Loading...
+                                    </button>
+                                ) :
+                                (
+                                    <button onClick={jointhecandidateList} style={{border:"none", textAlign:"center", 
+                                        padding:"10px 20px",color:"white",  fontSize:"14px", 
+                                        backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
+                                            Apply
+                                    </button>
+                                )
+                            }
+                        
+                        
                     </div>
-                    <br/>  <br/>
+                    <br/>  <br/> 
+                    The Last Winner was : {
+                        (
+                            <span style={{padding:"10px",backgroundColor:"white", width:"380px", borderRadius:"10px"}}>
+                            {
+                                Winner
+                            }
+                            </span>
+                        )
+                
+                    }
+                    <br/>  <br/>  <br/>  <br/>
+                    <div> 
+           
+                        <table className={styles.table}>
+                            <tbody>
+
+                            
+                            <tr className={styles.tr}>
+                            <th className={styles.th}>
+                                No
+                            </th>
+                            <th className={styles.th}>
+                                ID
+                            </th>
+                            <th className={styles.th}>
+                                Slogan
+                            </th>
+                            
+                            <th className={styles.th}>
+                               Name
+                            </th>
+                            <th className={styles.th}>
+                                Address
+                            </th>
+                            </tr>
+
+
                     {
     
                         members.map((lists,i) => {
     
                             return(
                                 !lists.Id == 0 && 
-                                <div>
-                                    
-                                <div key={i}>
-                                    <p>
+                                <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
+                                    <td className={styles.td}>
+                                    {serial++}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Id}
-                                    </p>
-                                    <p>
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.slogan}
-                                    </p>
+                                    </td>
                 
-                                    <p>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.name}
-                                    </p>
-                                    <p>
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Address}
-                                    </p>
-                                </div>
-                                </div>
+                                    </td>
+                                </tr>
+                            
                             )
                         })
                     }
-                     The Last Winner was : {Winner}
-                </div>
+
+                </tbody>
+            </table>
+        </div>
+        </div>
             )
         }
         // else (alreadyACandidate && !status){
             if(alredyAMemberOfDAO && alreadyACandidate && status){
             return (
-                <div>
-                    <p>
-                        You can't enter again as the results is been collated
-                    </p>
+                <div style={{marginTop:"-200px"}}>
+                    <div style={{fontSize:"25px", fontWeight:"600"}}>
+                        You can't enter again as the results is been collated 🥺🥺
+                    </div>
                     <br/>  <br/>
+                    The Last Winner was : {
+                        (
+                            <span style={{padding:"10px",backgroundColor:"white", width:"380px", borderRadius:"10px"}}>
+                            {
+                                Winner
+                            }
+                            </span>
+                        )
+                
+                    }
+                    <br/>  <br/>
+                    <div> 
+           
+                        <table className={styles.table}>
+                            <tbody>
+
+                            
+                            <tr className={styles.tr}>
+                            <th className={styles.th}>
+                                No
+                            </th>
+                            <th className={styles.th}>
+                                ID
+                            </th>
+                            <th className={styles.th}>
+                                Slogan
+                            </th>
+                            
+                            <th className={styles.th}>
+                               Name
+                            </th>
+                            <th className={styles.th}>
+                                Address
+                            </th>
+                            </tr>
+
+
                     {
     
                         members.map((lists,i) => {
     
                             return(
                                 !lists.Id == 0 && 
-                                <div>
-                                    
-                                <div key={i}>
-                                    <p>
+                                <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
+                                    <td className={styles.td}>
+                                    {serial++}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Id}
-                                    </p>
-                                    <p>
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.slogan}
-                                    </p>
+                                    </td>
                 
-                                    <p>
-                                    {lists.name}
-                                    </p>
-                                    <p>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                        {lists.name}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Address}
-                                    </p>
-                                </div>
-                                </div>
+                                    </td>
+                                </tr>
+                            
                             )
                         })
                     }
-                    <h3>
-                    The Last Winner was : {Winner}
-                </h3>
+
+                </tbody>
+            </table>
+        </div>
                 </div>
             )
         }
         if (alredyAMemberOfDAO && !alreadyACandidate && !status){
             return (
-                <div>
-                    <p>
-                        You can't enter again as the results is been collated and you missed the cuurent one.
-                    </p>
+                <div style={{marginTop:"-200px"}}>
+                    <div style={{fontSize:"25px", fontWeight:"600"}}>
+                    You can't enter again as the results is been collated and you missed it. 😜😜
+                    </div>
                     <br/>  <br/>
+                    
 
-                    <h3> People who didnt miss it are :</h3>
+                    <div style={{fontSize:"16px", fontWeight:"400"}}> 
+                    The people who didn't miss it are:
+                    </div>
+                        <div> 
+           
+                        <table className={styles.table}>
+                            <tbody>
+
+                            
+                            <tr className={styles.tr}>
+                            <th className={styles.th}>
+                                No
+                            </th>
+                            <th className={styles.th}>
+                                ID
+                            </th>
+                            <th className={styles.th}>
+                                Slogan
+                            </th>
+                            
+                            <th className={styles.th}>
+                               Name
+                            </th>
+                            <th className={styles.th}>
+                                Address
+                            </th>
+                            </tr>
+
+
                     {
     
                         members.map((lists,i) => {
-
+    
                             return(
                                 !lists.Id == 0 && 
-                                <div>
-                                    
-                                <div key={i}>
-                                    <p>
+                                <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
+                                    <td className={styles.td}>
+                                    {serial++}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Id}
-                                    </p>
-                                    <p>
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.slogan}
-                                    </p>
-
-                                    <p>
-                                    {lists.name}
-                                    </p>
-                                    <p>
+                                    </td>
+                
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                        {lists.name}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
                                         {lists.Address}
-                                    </p>
-                                </div>
-                                </div>
+                                    </td>
+                                </tr>
+                            
                             )
                         })
                     }
+
+                </tbody>
+            </table>
+        </div>
                 </div>
             )
 
@@ -500,14 +632,8 @@ export default function VotingPoll() {
         
      }
     return (
-
         <div>
-            <div>  
             {renderButton()}
-            <div>
-             
-            </div>
-            </div>
         </div>
     )
 }

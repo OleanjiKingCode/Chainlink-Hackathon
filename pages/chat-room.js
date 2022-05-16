@@ -220,8 +220,8 @@ export default function Chatting () {
           if(!walletConnected) {
             return (
               <button onClick={connectWallet} style={{border:"none", textAlign:"center", 
-              padding:"10px 20px",color:"white",  fontSize:"10px", 
-              backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
+              padding:"10px 20px",color:"white",  fontSize:"16px", 
+              backgroundColor:"blue",marginTop:"20px", borderRadius:"10px"}}>
                 Connect Wallet
               </button>
             )
@@ -235,8 +235,8 @@ export default function Chatting () {
                     To register Go to home page 😥
                 </div>
                 <button onClick={goback} style={{border:"none", textAlign:"center", 
-                  padding:"10px 20px",color:"white",  fontSize:"10px", 
-                  backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
+                  padding:"10px 20px",color:"white",  fontSize:"16px", 
+                  backgroundColor:"blue",marginTop:"20px" , borderRadius:"10px"}}>
                     Go Home
                 </button>
                 </div>

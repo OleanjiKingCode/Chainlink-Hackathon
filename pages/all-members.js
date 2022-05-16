@@ -18,7 +18,7 @@ export default function AllMembers() {
     const [walletConnected, setWalletConnected] = useState(false);
     const web3ModalRef = useRef();
     const router =useRouter()
-  
+    const[serial, setSerial]= useState(1)
     
   
     /*
@@ -89,48 +89,63 @@ export default function AllMembers() {
         }
     };
 
-// const renderButton = () =>{
-//     if (account === OwnersAddress){
-//         return (
-//             router.push('/')
-//         )
-//     }
-// }
-
     return (
-        
-        <div>
-            {/* {renderButton()} */}
-            <Head>
-            
-</Head>
-        {/* <div>
-            {renderButton()}
-        </div> */}
-        {
-        
-            list.map((lists,i) => {
+        <div> 
+           
+                        <table className={styles.table}>
+                            <tbody>
 
-                return(
-                    <div key={i}>
-                        <p>
-                           {lists.Index}
-                        </p>
-                        <p>
-                            {lists.Name}
-                        </p>
+                            
+                            <tr className={styles.tr}>
+                            <th className={styles.th}>
+                                No
+                            </th>
+                            <th className={styles.th}>
+                                ID
+                            </th>
+                            
+                            
+                            <th className={styles.th}>
+                               Name
+                            </th>
+                            <th className={styles.th}>
+                                Address
+                            </th>
+                            </tr>
 
-                        <p>
-                            {lists.Address}
-                        </p>
-                        {/* <p>
-                            {lists.Balance}
-                        </p> */}
-                    </div>
-                )
-            })
-        }
+
+                    {
+    
+                        members.map((lists,i) => {
+    
+                            return(
+                                !lists.Id == 0 && 
+                                <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
+                                    <td className={styles.td}>
+                                    {serial++}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                        {lists.Id}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                        {lists.Name}
+                                    </td>
+                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                        {lists.Address}
+                                    </td>
+                                </tr>
+                            
+                            )
+                        })
+                    }
+
+                </tbody>
+            </table>
         </div>
+        
+            
+        
+        
     )
 
 }

@@ -83,6 +83,7 @@ export default function Home() {
   const [walletConnected, setWalletConnected] = useState(false);
   const web3ModalRef = useRef();
   const[name,setName] =useState("")
+  const[serial, setSerial]= useState(1)
 
   const getProviderOrSigner = async (needSigner = false) => {
    
