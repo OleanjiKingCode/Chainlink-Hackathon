@@ -81,15 +81,60 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <div className='container-fluid'>
         <div className='row'>
-          
-          <div className='d-inline-flex p-4 m-10 bd-highlight justify-content-between align-items-center' style={{backgroundColor:"#57b3f0"}} >
+        <div className='col-md-2 text-white' style={{backgroundColor:"#222d32", height:"100vh",position:"relative", overflow:"hidden"}}>
             <Link href="/">
               <a  className={styles.first} >
-                <div className=' d-flex align-items-center text-align-center text-grey font-weight-bold'>
-                  <h3>OLEANJI CHAINLINK HACKATHON</h3>
+                <div className='font-weight-bold' style={{flexDirection:"column", color:"#b8c7ce", fontSize:"22px"}}>
+                  <p>OLEANJI CHAINLINK HACKATHON</p>
                 </div>
               </a>
             </Link>
+            <div className='p-1 text-align-center ' style={{backgroundColor:"#1a2226"}}>
+              <div style={{color:"white"}}>
+                Main Navigation
+              </div>
+            </div>
+            <Link href="/">
+              <div className='  py-4 px-2 mx-10'>
+                Home
+              </div>
+            </Link>
+            <Link href="/voting-poll">
+              <div className='py-4 px-2 mx-10'>
+                Voting
+              </div>
+            </Link>
+            <Link href="/lottery">
+              <div className='py-4 px-2 mx-10'>
+                Lottery
+              </div>
+            </Link>
+            <Link href="/chat-room">
+              <div className=' py-4 px-2 mx-10'>
+                Chat Room
+              </div>
+            </Link>
+            <Link href="/news">
+              <div className='py-4 px-2 mx-10'>
+                News
+              </div>
+            </Link>
+            {
+              account === OwnersAddress && (
+                
+                <Link href="/all-members">
+                  <div className='py-4 px-2 mx-10'>
+                    All Members
+                  </div>
+                </Link>
+              
+              )
+            }
+          </div>
+          <div className='col-md-10' style={{backgroundColor:"#f1f1f1"}} >
+              <div className='row d-flex align-items-start' style={{flexDirection:"column"}}>
+              <div className='col-md-2 d-inline-flex p-4 bd-highlight justify-content-end align-items-center' style={{backgroundColor:"whitesmoke", width:"100%"}} >
+            
             {
               !walletConnected && (
                 <div>
@@ -118,49 +163,16 @@ function MyApp({ Component, pageProps }) {
             }
           </div>
      
-          <div className='col-md-2 text-white' style={{backgroundColor:" #1172b3", height:"589px",position:"relative", overflow:"hidden"}}>
-            <Link href="/">
-              <div className=' d-flex justify-content-center p-4 mx-10 '>
-                Home
-              </div>
-            </Link>
-            <Link href="/voting-poll">
-              <div className=' d-flex justify-content-center  p-4 mx-10'>
-                Voting
-              </div>
-            </Link>
-            <Link href="/lottery">
-              <div className='d-flex justify-content-center  p-4 mx-10'>
-                Lottery
-              </div>
-            </Link>
-            <Link href="/chat-room">
-              <div className=' d-flex justify-content-center p-4 mx-10'>
-                Chat Room
-              </div>
-            </Link>
-            <Link href="/news">
-              <div className='d-flex justify-content-center p-4 mx-10'>
-                News
-              </div>
-            </Link>
-            {
-              account === OwnersAddress && (
-                
-                <Link href="/all-members">
-                  <div className=' d-flex justify-content-center p-4 mx-10'>
-                    All Members
-                  </div>
-                </Link>
-              
-              )
-            }
-          </div>
-          <div className='col-md-9 d-inline-flex justify-content-center align-self-center'>
+        
+          <div className='col-md-10 d-inline-flex justify-content-center mt-2 align-self-center' >
             <OwnersAccount.Provider value={account}>
             <Component {...pageProps}  />
             </OwnersAccount.Provider>
           </div>
+              </div>
+         
+          </div>
+
           
         </div>
         

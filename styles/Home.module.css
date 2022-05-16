@@ -29,9 +29,11 @@
 
 }
 .first {
-  margin-left: 120px;
+  margin-left: 20px;
   /* background-color: #0070f3; */
   text-decoration: none;
+  margin-bottom: 20px;
+
 }
 .second{
   margin-right: 10px;
