@@ -179,45 +179,87 @@ export default function Home() {
 
   const renderButton = () =>{
     if(account !== OwnersAddress) {
-      if(loading) {
-        return (
-          <div>
-            <button >
-             ...Loading...
-            </button>
-          </div>
-        )
-      }
       if(!alreadyAMember) {
         return (
-          <div>
-            <p>
+          <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
+            
               Welcome to OleanjiDAO ChainLink DAO
-            </p>
+              <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
+              DAO's CA: 
+                {
+                  (
+                    <span style={{paddingLeft:"10px"}}>
+                      {
+                         LinkTokenAddress
+                      }
+                    </span>
+                  )
+                  
+                }
+                <br/> <br/>
+                <div style={{fontSize:"16px", fontWeight:"400"}}> 
+                   To be a member you have to Register: 
+                 </div>
+                 <br/> 
+              </div>
+              <div className='d-flex text-align-center' style={{fontSize:"15px"}}> 
+              <span className='my-1 mx-2'>
+              Name:
+              </span>
+              
+              
+            
             <input
-              placeholder='Enter a nickname'
+              placeholder='Enter Any Name'
               type="text"
               onChange={e => setName(e.target.value)}
+              style={{padding:"10px", border:"1px solid black" , borderRadius:"10px",width:"100%", fontSize:"10px"}}
               />
-            <button onClick={joinmembership}>
-              Join Membership
-            </button>
+              </div> {
+                loading ? 
+                (
+                  <button  style={{ border:"none", textAlign:"center", 
+                  padding:"10px 20px",color:"white", 
+                  backgroundColor:"blue" , marginLeft:"10px" , borderRadius:"10px"}}>
+                  ...Loading...
+                  </button>
+                ) : (
+                  <button onClick={joinmembership}  style={{border:"none", textAlign:"center", 
+                  padding:"10px 20px",color:"white",  fontSize:"10px", 
+                  backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
+                    Join Membership
+                  </button>
+                  ) 
+              }
+            
           </div>
         )
         
       }
       else if(alreadyAMember){
         return (
-          <div>
-            <h3>
-              Welcome Back to OleanjiDAO ChainLink DAO
-              <p>
+          <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
+            
+              Welcome Back to OleanjiDAO ChainLink DAO You are now a Member 🎉🎉🎉
+              <br/><br/>
+              <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
+              DAO's CA: 
                 {
-                  LinkTokenAddress
-                } <br/>
-                  This is the Contract Address of OLeanji Link Token
-              </p>
-            </h3>
+                  (
+                    <span style={{paddingLeft:"10px"}}>
+                      {
+                         LinkTokenAddress
+                      }
+                    </span>
+                  )
+                  
+                }
+                <br/> <br/><br/>
+                 <div style={{fontSize:"16px", fontWeight:"400"}}> 
+                   As a member you can now explore this DAO 
+                 </div>
+              </div>
+           
            
           </div>
         )
@@ -225,16 +267,27 @@ export default function Home() {
     }
     else if (account === OwnersAddress) {
       return (
-        <h3>
-        Boss Welcome ser!!!
-        <p>
+        <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
+        Welcome Admin 
+          <div>
+          DAO's CA: 
                 {
-                  LinkTokenAddress
+                  (
+                    <span style={{paddingLeft:"10px"}}>
+                      {
+                         LinkTokenAddress
+                      }
+                    </span>
+                  )
+                  
                 }
-                <br/>
-                  This is the Contract Address of OLeanji Link Token
-              </p>
-      </h3>
+            <br/> <br/><br/>
+            <div style={{fontSize:"16px", fontWeight:"400"}}> 
+                   Check the members in the All-Members tab
+                 </div>
+              
+          </div>
+      </div>
       )
     }
     

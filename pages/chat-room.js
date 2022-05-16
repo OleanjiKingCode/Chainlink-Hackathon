@@ -219,7 +219,9 @@ export default function Chatting () {
 
           if(!walletConnected) {
             return (
-              <button onClick={connectWallet}  style={{margin:"50px", padding:"15px 30px" , backgroundColor: "blue"}}>
+              <button onClick={connectWallet} style={{border:"none", textAlign:"center", 
+              padding:"10px 20px",color:"white",  fontSize:"10px", 
+              backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
                 Connect Wallet
               </button>
             )
@@ -228,11 +230,14 @@ export default function Chatting () {
               
               return(
                 <div className='d-inline-block'>
-                <p>
-                    Go to home to join Membership to be able to view this section.
-                </p>
-                <button onClick={goback}>
-                    HOME
+                <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
+                    This Page is unavailable to you because you are not a member.
+                    To register Go to home page 😥
+                </div>
+                <button onClick={goback} style={{border:"none", textAlign:"center", 
+                  padding:"10px 20px",color:"white",  fontSize:"10px", 
+                  backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
+                    Go Home
                 </button>
                 </div>
             )
@@ -242,18 +247,18 @@ export default function Chatting () {
             return(
               <div className='container-fluid'> 
                 <div className='row d-flex align-items-center justify-content-center' style={{flexDirection:'column'}}>
-                  <div className='col-md-10' style={{textAlign:"center", border:"2px solid black", height:"470px", width:"100%"}}>
-                    <p>
+                  <div className='col-md-10' style={{textAlign:"center",boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px", height:"470px", width:"100%"}}>
+                    <span>
                       Messages will appear here write a message
                        for all the members of this DAO to see below.
-                    </p>
+                    </span>
                   </div>
-                  <div className='col-md-2 ' style={{border:"2px solid black", height:"auto", width:"100%"}}>
+                  <div className='col-md-2 ' style={{boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px",height:"auto", width:"100%"}}>
                       <div className='row d-flex align-items-center justify-content-center' style={{padding:"5px 0"}}>
-                          <div className='col-md-8'>
+                      <div className='col-md-8'>
                             <input 
                             type="text" placeholder='Write in your message here...'
-                            style={{padding:"10px", border:"1px solid black" , borderRadius:"10px",width:"100%"}}
+                            style={{padding:"10px", border:"none" , borderRadius:"10px",width:"100%"}}
                             onChange= {e => setMessage(e.target.value)}
                             />
                           </div>
@@ -261,20 +266,16 @@ export default function Chatting () {
                             <button onClick={transferTokens} 
                             style={{ border:"none", textAlign:"center", 
                             padding:"10px 20px",color:"white", 
-                            backgroundColor:"blue" , marginLeft:"10px" , borderRadius:"10px"}}
-                           
-                            >
+                            backgroundColor:"blue" , marginLeft:"10px" , borderRadius:"10px"}}>
                               {
                                 loading ? (
                                   <>
-                                  <i class="fa fa-fw fa-spin fa-spinner"></i>
+                                   <i class="fa fa-fw fa-spin fa-spinner"></i>
                                   </>
                                 ) : (
                                   <>
                                   SEND
                                   </>
-                                    
-                                 
                                 )
                               }
                             </button>
@@ -291,7 +292,7 @@ export default function Chatting () {
                 <div className='row'>
                   <div className='col-md-7'>
                     <div className='row d-flex align-items-center justify-content-center' style={{flexDirection:'column'}}>
-                    <div className='col-md-10' style={{textAlign:"center", border:"2px solid black", height:"470px", width:"100%"}}>
+                    <div className='col-md-10' style={{textAlign:"center",boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px", height:"470px", width:"100%"}}>
                        {
 
                           allTransactions.map((transaction , i ) => {
@@ -327,12 +328,12 @@ export default function Chatting () {
                             )})
                         }
                     </div>
-                    <div className='col-md-2 ' style={{border:"2px solid black", height:"auto", width:"100%"}}>
+                    <div className='col-md-2 my-2 ' style={{boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px" ,height:"auto", width:"100%"}}>
                       <div className='row d-flex align-items-center justify-content-center' style={{padding:"5px 0"}}>
                           <div className='col-md-8'>
                             <input 
                             type="text" placeholder='Write in your message here...'
-                            style={{padding:"10px", border:"1px solid black" , borderRadius:"10px",width:"100%"}}
+                            style={{padding:"10px", border:"none" , borderRadius:"10px",width:"100%"}}
                             onChange= {e => setMessage(e.target.value)}
                             />
                           </div>
@@ -359,8 +360,8 @@ export default function Chatting () {
                 </div>
                   </div>
                   <div className='col-md-5 ' style={{textAlign:"center"}}>
-                    <h4  style={{marginBottom:"20px"}}>
-                      Message Record
+                    <h4  style={{margin:"20px 1px"}}>
+                      Message Record 📁
                     </h4>
          <div> 
            
@@ -436,12 +437,7 @@ export default function Chatting () {
       }
       return (
         <div>
-        <Head>
-        <title>OleanjiDAO</title>
-          <meta name="description" content="OleanjiDAOToken" />
-          <link rel="icon" href="/favicon.ico" />
-         
-        </Head>
+       
         <div>
         {renderButton()}
 
