@@ -38,8 +38,8 @@
 .second{
   margin-right: 10px;
   border-radius: 50px;
-  background-color: rgb(245, 245, 245);
-  box-shadow: 2px 4px 1px rgb(173, 173, 173);
+  background-color: rgb(219, 217, 217);
+  box-shadow: 0px 5px 10px 0px rgba(114, 113, 113, 0.452);
   /* border: 1px solid rgba(0, 0, 0, 0.815); */
   border: none;
   display: flex;
@@ -151,7 +151,27 @@
 .logo {
   height: 1em;
   margin-left: 0.5rem;
+  /* margin: ; */
 }
+
+.hover{
+  padding: 20px 10px ;
+  border-left: 4px transparent solid;
+
+}
+.hover:hover {
+  background: #1a22269f;
+  border-left: 4px #097db8e3 solid;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
 
 @media (max-width: 600px) {
   .grid {

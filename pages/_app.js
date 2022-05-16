@@ -81,41 +81,44 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <div className='container-fluid'>
         <div className='row'>
-        <div className='col-md-2 text-white' style={{backgroundColor:"#222d32", height:"100vh",position:"relative", overflow:"hidden"}}>
+        <div className='col-md-2 text-white p-0' style={{backgroundColor:"#222d32", height:"100vh",position:"relative", overflow:"hidden"}}>
             <Link href="/">
               <a  className={styles.first} >
-                <div className='font-weight-bold' style={{flexDirection:"column", color:"#b8c7ce", fontSize:"22px"}}>
+                <div className='font-weight-bold px-2' style={{flexDirection:"column", color:"#b8c7ce", fontSize:"22px"}}>
                   <p>OLEANJI CHAINLINK HACKATHON</p>
                 </div>
               </a>
             </Link>
-            <div className='p-1 text-align-center ' style={{backgroundColor:"#1a2226"}}>
-              <div style={{color:"white"}}>
+            <div className='p-1 text-align-center my-3 ' style={{backgroundColor:"#1a2226"}}>
+              <div style={{color:"white", fontSize:"12px"}}>
                 Main Navigation
               </div>
             </div>
-            <Link href="/">
-              <div className='  py-4 px-2 mx-10'>
+            <Link href="/" >
+              {/* <div className='py-4 px-3 mx-10'> */}
+                <div className={styles.hover}>
                 Home
-              </div>
+                </div>
+               
+              {/* </div> */}
             </Link>
             <Link href="/voting-poll">
-              <div className='py-4 px-2 mx-10'>
+              <div className={styles.hover}>
                 Voting
               </div>
             </Link>
             <Link href="/lottery">
-              <div className='py-4 px-2 mx-10'>
+              <div className={styles.hover}>
                 Lottery
               </div>
             </Link>
             <Link href="/chat-room">
-              <div className=' py-4 px-2 mx-10'>
+              <div className={styles.hover}>
                 Chat Room
               </div>
             </Link>
             <Link href="/news">
-              <div className='py-4 px-2 mx-10'>
+              <div className={styles.hover}>
                 News
               </div>
             </Link>
@@ -123,7 +126,7 @@ function MyApp({ Component, pageProps }) {
               account === OwnersAddress && (
                 
                 <Link href="/all-members">
-                  <div className='py-4 px-2 mx-10'>
+                  <div className={styles.hover}>
                     All Members
                   </div>
                 </Link>
@@ -164,7 +167,7 @@ function MyApp({ Component, pageProps }) {
           </div>
      
         
-          <div className='col-md-10 d-inline-flex justify-content-center mt-2 align-self-center' >
+          <div className='col-md-10 d-flex justify-content-center mt-2 align-items-center' style={{height:"80vh", width:"100%"}} >
             <OwnersAccount.Provider value={account}>
             <Component {...pageProps}  />
             </OwnersAccount.Provider>
