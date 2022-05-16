@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import { OwnersAccount } from '../context';
 import { useEffect, useRef, useState } from "react";
 import { OwnersAddress } from '../constant';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 function MyApp({ Component, pageProps }) {
 
@@ -97,7 +98,7 @@ function MyApp({ Component, pageProps }) {
             <Link href="/" >
               {/* <div className='py-4 px-3 mx-10'> */}
                 <div className={styles.hover}>
-                Home
+                 Home
                 </div>
                
               {/* </div> */}
@@ -107,16 +108,17 @@ function MyApp({ Component, pageProps }) {
                 Voting
               </div>
             </Link>
-            <Link href="/lottery">
-              <div className={styles.hover}>
-                Lottery
-              </div>
-            </Link>
             <Link href="/chat-room">
               <div className={styles.hover}>
                 Chat Room
               </div>
             </Link>
+            <Link href="/lottery">
+              <div className={styles.hover}>
+                Lottery
+              </div>
+            </Link>
+            
             <Link href="/news">
               <div className={styles.hover}>
                 News
