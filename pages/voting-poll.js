@@ -384,9 +384,9 @@ export default function VotingPoll() {
                             {
                                 loading ?
                                 (
-                                    <button  style={{ border:"none", textAlign:"center", 
-                                        padding:"10px 20px",color:"white", 
-                                        backgroundColor:"blue" , marginLeft:"10px" , borderRadius:"10px"}}>
+                                    <button style={{border:"none", textAlign:"center", 
+                                    padding:"10px 20px",color:"white",  fontSize:"14px", 
+                                    backgroundColor:"blue",marginTop:"20px", float:"right" , borderRadius:"10px"}}>
                                         ...Loading...
                                     </button>
                                 ) :

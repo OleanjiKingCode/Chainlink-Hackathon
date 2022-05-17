@@ -91,7 +91,11 @@ export default function AllMembers() {
 
     return (
         <div> 
-           
+            <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
+            
+            These are all the respectable membersof this DAO 🎉🎉🎉
+            <br/><br/>
+            </div>
                         <table className={styles.table}>
                             <tbody>
 
@@ -116,21 +120,21 @@ export default function AllMembers() {
 
                     {
     
-                        members.map((lists,i) => {
-    
+                        list.map((lists,i) => {
+                            console.log(lists.Name)
                             return(
-                                !lists.Id == 0 && 
-                                <tr key={i} className={styles.tr} style={{fontSize:"10px"}}>
+                                
+                                <tr key={i} className={styles.tr} style={{fontSize:"14px"}}>
                                     <td className={styles.td}>
                                     {serial++}
                                     </td>
-                                    <td className={styles.td} style={{fontSize:"10px"}}>
-                                        {lists.Id}
+                                    <td className={styles.td} style={{fontSize:"14px"}}>
+                                        {lists.Index}
                                     </td>
-                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                    <td className={styles.td} style={{fontSize:"14px"}}>
                                         {lists.Name}
                                     </td>
-                                    <td className={styles.td} style={{fontSize:"10px"}}>
+                                    <td className={styles.td} style={{fontSize:"14px"}}>
                                         {lists.Address}
                                     </td>
                                 </tr>

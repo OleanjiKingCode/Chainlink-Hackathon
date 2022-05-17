@@ -270,7 +270,7 @@ export default function Chatting () {
                               {
                                 loading ? (
                                   <>
-                                   <i class="fa fa-fw fa-spin fa-spinner"></i>
+                                   ...
                                   </>
                                 ) : (
                                   <>
@@ -345,7 +345,7 @@ export default function Chatting () {
                               {
                                 loading ? (
                                   <>
-                                   <i class="fa fa-fw fa-spin fa-spinner"></i>
+                                   ...
                                   </>
                                 ) : (
                                   <>
