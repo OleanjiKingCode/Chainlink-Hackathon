@@ -184,86 +184,7 @@ export default function VotingPoll() {
             return false;
         }
     }
-    // const GetRandomNumber = async () =>{
-    //     try {
-    //         const signer = await getProviderOrSigner(true);
-    //         const vrfContract = new Contract(VRFAddress,VRF.abi,signer);
-    //         // await vrfContract.getRandomNum()
-    //         const delay = ms => new Promise(res => setTimeout(res, ms)); 
-    //         const getRandomNum = await vrfContract.getRandomNum();
-    //         const rand = await vrfContract.requestRandomWords();
-    //         await getRandomNum.wait()
-    //         await rand.wait()
-    //         await delay(100000);
-    //         const id = await vrfContract.s_requestId();
-    //         console.log(id);
-    //         await delay(420000);
-    //         console.log("Now to get the rand number ")
-    //         const RandomNum = await vrfContract.s_randomWords();
-    //         console.log(RandomNum);
-    //         console.log(RandomNum.toNumber())
-    //         let randnumber = RandomNum.toNumber()
-    //         await delay(40000);
-    //         setRand(randnumber);
-    //         await delay(40000);
-    //         console.log(rand)
-    //        setFinished(true);
-    //     } catch (m) {
-    //         console.log(m)
-    //     }
-    // }
-
-    // const checkIfFinished = async () =>{
-    //     try {
-    //         const provider = await getProviderOrSigner();
-    //         const vrfContract = new Contract(VRFAddress,VRF.abi,provider);
-               
-    //         const finished = await vrfContract.getrandTime();
-            
-    //         if (finished > 0) {
-    //             console.log(finished);
-    //         const RandomNum = await vrfContract.s_randomWords();
-    //         let randnumber = RandomNum.toNumber()
-           
-    //         setRand(randnumber);
-    //         const hasfinished = finished.lt(Math.floor(Date.now() / 1000));
-    //         console.log("it has finished" + hasfinished)
-    //         if(hasfinished){
-    //                 console.log("banji ithink this might work")
-    //             setFinished(true)
-                
-    //         }else {
-    //             setFinished(false)
-    //         }
-            
-    //         return hasfinished;
-    //         }
-    //         else{
-    //             return false 
-    //         }
-            
-    //     } catch (error) {
-    //         console.log(error)
-    //         return false 
-    //     }
-    // }
-
-    // const CreditWinnerAndFinalise = async ()=>{
-    //     try {
-    //         const signer = await getProviderOrSigner(true);
-           
-    //         const contract = new Contract(VotingAddress,VOTE.abi,signer);
-    //         const bigRand = ethers.utils.parseEther(rand);
-    //         const transaction = await contract.CreditWinner(bigRand);
-    //         await transaction.wait();
-    //         const delay = ms => new Promise(res => setTimeout(res, ms)); 
-    //         await delay(300000);
-    //         const finalising = await contract.ResetApplication();
-    //         await finalising.wait();
-    //     } catch (r) {
-    //         console.log(r);
-    //     }
-    // }
+    
 
     const checIfAlreadyACandidate = async() =>{
         try {
@@ -366,8 +287,8 @@ export default function VotingPoll() {
             return(
                 <div style={{marginTop:"-200px"}}>
                     <div style={{fontSize:"25px", fontWeight:"600"}}>
-                        
-                            NOTE: IF YOU ARE SIGNING UP FOR THIS ITS COST 250OLT 🤑 💰💰
+                            THIS IS THE LOTTERY SYSTEM AND IT OCCURS EVERY 15 MINUTES SO RELAOD IF IT HASNT STATRED YET.
+                            NOTE: IF YOU ARE SIGNING UP FOR THIS ITS COST 250 OLT 🤑 💰💰
                             
                        
                     </div>

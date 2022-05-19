@@ -247,10 +247,12 @@ export default function Chatting () {
             return(
               <div className='container-fluid'> 
                 <div className='row d-flex align-items-center justify-content-center' style={{flexDirection:'column'}}>
-                  <div className='col-md-10' style={{marginTop:"100px",textAlign:"center",boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px", height:"470px", width:"100%"}}>
+                  <div className='col-md-10' style={{marginTop:"30px",textAlign:"center",boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px", height:"470px", width:"100%"}}>
                     <span>
                       Messages will appear here write a message
-                       for all the members of this DAO to see below.
+                      for all the members of this DAO to see below.
+                        <br/>
+                       Each message you send cost one 1 OLT token
                     </span>
                   </div>
                   <div className='col-md-2 ' style={{boxShadow:"0px 5px 10px 0px rgba(114, 113, 113, 0.452)",borderRadius:"10px",height:"auto", width:"100%"}}>
