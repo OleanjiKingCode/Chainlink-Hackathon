@@ -206,7 +206,7 @@ export default function Mint() {
                                             <button style={{border:"none", textAlign:"center", 
                                                     padding:"10px 20px",color:"white",  fontSize:"16px", 
                                                     backgroundColor:"blue",marginTop:"20px", borderRadius:"10px"}}>
-                                                        <a target="_blank" href="https://testnets.opensea.io/">
+                                                        <a target="_blank" href="https://testnets.opensea.io/" rel="noreferrer">
                                                            OpenSea Rinkeby
                                                         </a>
                                             </button>
