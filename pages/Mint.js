@@ -11,8 +11,6 @@ import LINK from '../artifacts/contracts/OleanjiDAOLinkToken.sol/OleanjiDAOLinkT
 import OCH from '../artifacts/contracts/OCH.sol/OCH.json'
 
 
-
-
 export default function Mint() {
     const[alredyAMemberOfDAO , setAlredyAMemberOfDAO] = useState(false)
     const [walletConnected, setWalletConnected] = useState(false);

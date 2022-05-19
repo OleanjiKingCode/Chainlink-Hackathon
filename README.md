@@ -35,6 +35,7 @@
     -IPFS
     -PINATA
     -INKSCAPE (FOR THE GRAPHICS OF THE NFT'S)
+    
 
 
 
