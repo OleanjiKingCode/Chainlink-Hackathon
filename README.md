@@ -18,7 +18,8 @@
     So now in this DAO you can send message to the group and using this feature and everyone sees it and for every messga ecost 1 OLT token i know paying gas fees every time seems like a hassle but thats what we are working with ## FOR NOW as i'll improve on it.
 
 ## NFT Minting
-    This DAO has an nft minting platform whereby you can actually mint one of the 20 oleanji Chainlink NFT's that are worth 50 OLT each.which can be viewed on opensea which the link is provided.
+    This DAO has an nft minting platform whereby you can actually mint one of the 12 oleanji Chainlink NFT's that are worth 200 OLT each.which can be viewed on opensea which the link is provided.
+
 
 
 
@@ -32,7 +33,7 @@
     -CHAINLINK CONTRACTS
     -OPENZEPPELIN CONTRACTS 
     -IPFS
-    -FILEBASE
+    -PINATA
     -INKSCAPE (FOR THE GRAPHICS OF THE NFT'S)
 
 

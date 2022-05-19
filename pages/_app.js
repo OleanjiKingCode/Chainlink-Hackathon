@@ -113,17 +113,13 @@ function MyApp({ Component, pageProps }) {
                 Chat Room
               </div>
             </Link>
-            <Link href="/lottery">
+            <Link href="/Mint">
               <div className={styles.hover}>
-                Lottery
+                NFT's
               </div>
             </Link>
             
-            <Link href="/news">
-              <div className={styles.hover}>
-                News
-              </div>
-            </Link>
+            
             {
               account === OwnersAddress && (
                 

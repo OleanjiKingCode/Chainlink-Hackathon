@@ -22,13 +22,20 @@ async function main() {
   await chatting.deployed();
   console.log("The chatting Contract is:", chatting.address);
   
+  const OCH = await hre.ethers.getContractFactory("OCH");
+  const metadata = "ipfs://Qmf2K9v8SLusJc6yyqRp7op8aRUc9HsxPQKDHdqCNxwqay/"
+
+  const och = await OCH.deploy(metadata,LinkCA);
+  await och.deployed();
+  console.log("OCH Contract is:", och.address);
+
 
   filesys.writeFileSync('./constant.js' , `
   export const LinkTokenAddress ="${linktoken.address}"
   export const OwnersAddress = "${linktoken.signer.address}"
   export const VotingAddress ="${voting.address}"
   export const ChattingAddress ="${chatting.address}"
-  
+  export const NFTAddress ="${och.address}"
   `)
 }
 

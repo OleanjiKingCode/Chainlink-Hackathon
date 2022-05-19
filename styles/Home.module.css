@@ -167,7 +167,11 @@
   cursor: pointer;
 }
 
-
+.boxyImage{
+  position: absolute;
+  transform: translate(70px, -250px);
+  z-index:0;
+}
 
 
 
