@@ -479,7 +479,7 @@ export default function VotingPoll() {
             return (
                 <div style={{marginTop:"-200px"}}>
                     <div style={{fontSize:"25px", fontWeight:"600"}}>
-                        You can't enter again as the results is been collated 🥺🥺
+                        You can&apos;t enter again as the results is been collated 🥺🥺
                     </div>
                     <br/>  <br/>
                     The Last Winner was : {
@@ -558,13 +558,13 @@ export default function VotingPoll() {
             return (
                 <div style={{marginTop:"-200px"}}>
                     <div style={{fontSize:"25px", fontWeight:"600"}}>
-                    You can't enter again as the results is been collated and you missed it. 😜😜
+                    You can&apos;t enter again as the results is been collated and you missed it. 😜😜
                     </div>
                     <br/>  <br/>
                     
 
                     <div style={{fontSize:"16px", fontWeight:"400"}}> 
-                    The people who didn't miss it are:
+                    The people who didn&apos;t miss it are:
                     </div>
                         <div> 
            

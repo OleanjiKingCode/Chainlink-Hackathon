@@ -186,7 +186,7 @@ export default function Home() {
             
               Welcome to OleanjiDAO ChainLink DAO
               <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
-              DAO's CA: 
+              DAO&apos;s CA: 
                 {
                   (
                     <span style={{paddingLeft:"10px"}}>
@@ -244,7 +244,7 @@ export default function Home() {
               Welcome Back to OleanjiDAO ChainLink DAO You are now a Member 🎉🎉🎉
               <br/><br/>
               <div className='p-1' style={{fontSize:"20px", fontWeight:"500"}}>
-              DAO's CA: 
+              DAO&apos;s CA: 
                 {
                   (
                     <span style={{paddingLeft:"10px"}}>
@@ -271,7 +271,7 @@ export default function Home() {
         <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
         Welcome Admin 
           <div>
-          DAO's CA: 
+          DAO&apos;s CA: 
                 {
                   (
                     <span style={{paddingLeft:"10px"}}>

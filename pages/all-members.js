@@ -93,7 +93,7 @@ export default function AllMembers() {
         <div> 
             <div className='p-3' style={{fontSize:"29px", fontWeight:"700"}}>
             
-            These are all the respectable membersof this DAO 🎉🎉🎉
+            These are all the respectable members of this DAO 🎉🎉🎉
             <br/><br/>
             </div>
                         <table className={styles.table}>
