@@ -257,7 +257,7 @@ export default function Mint() {
                     </div>
                     <div style={{fontSize:"16px",fontWeight:"500", paddingBottom:"30px"}}>
                         Amount of NFT Minted : {tokenIdsMinted} out of  12
-                                The NFT's has all been minted sorry bro. 😥
+                                The NFT&apos;s has all been minted sorry bro. 😥
                             </div>
                             <div>
                                 <button style={{border:"none", textAlign:"center", 

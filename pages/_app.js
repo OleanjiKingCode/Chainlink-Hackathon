@@ -115,7 +115,7 @@ function MyApp({ Component, pageProps }) {
             </Link>
             <Link href="/Mint">
               <div className={styles.hover}>
-                NFT's
+                NFT&apos;s
               </div>
             </Link>
             
