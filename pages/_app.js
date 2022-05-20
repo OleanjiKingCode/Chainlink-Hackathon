@@ -131,6 +131,9 @@ function MyApp({ Component, pageProps }) {
               
               )
             }
+            <div className='my-5 mx-2' style={{fontWeight:"700"}}>
+              IF ERROR FOR ANY REASON PLS RELOAD
+            </div>
           </div>
           <div className='col-md-10' style={{backgroundColor:"#f1f1f1"}} >
               <div className='row d-flex align-items-start' style={{flexDirection:"column"}}>
