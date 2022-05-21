@@ -21,7 +21,7 @@ contract OCH is ERC721Enumerable, Ownable {
     ERC20 linktoken;
     IOleanjiDAOLinkToken oleanjidaotoken;
     
-    mapping(address => bool) private alreadyMinted;
+    mapping(address => bool) public alreadyMinted;
 
         
 
@@ -41,14 +41,15 @@ contract OCH is ERC721Enumerable, Ownable {
         tokenIds += 1;
         linktoken.transferFrom(msg.sender, address(this) ,_amount);
         _safeMint(msg.sender, tokenIds);
+        alreadyMinted[msg.sender] = true;
     }
     
 
-      function AlreadyMinted(address sender) external view returns(bool){
+      function AlreadyMintedAnNFT(address sender) external view returns(bool){
        bool minted = alreadyMinted[sender];
        return minted;
     }
-    
+       
     
 
      function getMintingPrice() public view returns(uint){

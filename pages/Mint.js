@@ -111,6 +111,7 @@ export default function Mint() {
             await mint.wait()
             setLoading(false)
             window.alert("You have minted an OCH NFT Right Now Congratulations 🎉🎉🎉 ")
+            checIfAlreadyMinted()
         } catch (q) {
             console.log(q)
         }
@@ -135,11 +136,14 @@ export default function Mint() {
 
     const checIfAlreadyMinted= async() =>{
         try {
-            const signer = await getProviderOrSigner(true);
-           
-            const NFTContract = new Contract(NFTAddress,OCH.abi,signer);
+         
+        const signer = await getProviderOrSigner(true);
+
+        const NFTContract = new Contract(NFTAddress,OCH.abi,signer);
         
-        const tx = await NFTContract.AlredyMinted(signer.getAddress());
+      
+        const tx = await NFTContract.AlreadyMintedAnNFT(signer.getAddress());
+        console.log(tx)
         if (tx) {
         setAlredyMinted(true);
         }
@@ -148,6 +152,7 @@ export default function Mint() {
         }
         } catch (error) {
             console.log(error)
+            
         }
         
        
@@ -191,21 +196,21 @@ export default function Mint() {
                     <div className='col-md-8 ' style={{zIndex:"999"}}>
                         <div style={{width:"450px", height:"300px", backgroundColor:"blanchedalmond", padding:"30px 30px",boxShadow:" 0px 5px 20px 0px rgba(0, 81, 250, 0.1)", borderRadius:"25px"}}>
                             <div style={{fontSize:"20px",fontWeight:"500", paddingBottom:"40px"}}>
-                                Each Member can only mint 1 OCH NFT Once.
+                                Each Member can only mint 1 OCH NFT Once for 200 OLT.
                             </div>
-                            <div style={{fontSize:"14px",fontWeight:"400", paddingBottom:"30px"}}>
+                            <div style={{fontSize:"14px",fontWeight:"400", paddingBottom:"20px"}}>
                                 Amount of NFT Minted : {tokenIdsMinted} out of  12
                             </div>
                             <div>
                                 {
                                     alreadyMinted ? (
                                         <div>
-                                            <div style={{fontSize:"14px",fontWeight:"400", paddingBottom:"30px"}}>
-                                                Go to Opensea, LogIn and go to Collections
+                                            <div style={{fontSize:"14px",fontWeight:"400", paddingBottom:"20px"}}>
+                                               You have already Minted Go to Opensea, LogIn and go to Collections to view ur OCH NFT
                                             </div>
                                             <button style={{border:"none", textAlign:"center", 
                                                     padding:"10px 20px",color:"white",  fontSize:"16px", 
-                                                    backgroundColor:"blue",marginTop:"20px", borderRadius:"10px"}}>
+                                                    backgroundColor:"white",marginTop:"10px", borderRadius:"10px"}}>
                                                         <a target="_blank" href="https://testnets.opensea.io/" rel="noreferrer">
                                                            OpenSea Rinkeby
                                                         </a>
