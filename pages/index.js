@@ -203,8 +203,8 @@ export default function Home() {
                    No Rinkeby Eth? get from:
                    
                    <br/>
-                   <a href='https://rinkebyfaucet.com/' target='_blank' > Faucet 1</a> <br/>
-                   <a href='https://faucets.chain.link/rinkeby' target='_blank' > Faucet 2</a>
+                   <a href='https://rinkebyfaucet.com/' target='_blank' rel="noopener"> Faucet 1</a> <br/>
+                   <a href='https://faucets.chain.link/rinkeby' target='_blank'  rel="noopener" > Faucet 2</a>
                  </div>
                  <br/> 
               </div>
