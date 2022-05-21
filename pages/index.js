@@ -200,8 +200,8 @@ export default function Home() {
                 <br/> <br/>
                 <div style={{fontSize:"16px", fontWeight:"400"}}> 
                    To be a member you have to Register and Pay a membership price of 0.025 Eth: 
-                   [No Rinkeby Eth? get from:
-                   ]
+                   No Rinkeby Eth? get from:
+                   
                    <br/>
                    <a href='https://rinkebyfaucet.com/' target='_blank' > Faucet 1</a> <br/>
                    <a href='https://faucets.chain.link/rinkeby' target='_blank' > Faucet 2</a>
